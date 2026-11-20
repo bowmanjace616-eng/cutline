@@ -21,6 +21,7 @@ def render(
     ass_path: str | None = None,
     has_audio: bool = True,
     preview: bool = False,
+    extra_filters: list[str] | None = None,
 ) -> str:
     """Write out_path containing only the keep ranges of source, in order."""
     if not keep:
@@ -31,6 +32,8 @@ def render(
         v += ",crop='min(iw,ih*9/16)':'min(ih,iw*16/9)',scale=1080:1920,setsar=1"
     elif preview:
         v += ",scale=-2:480"
+    if extra_filters:
+        v += "," + ",".join(extra_filters)
     if ass_path:
         esc = ass_path.replace("\\", "/").replace(":", "\\:").replace("'", "\\'")
         v += f",ass='{esc}'"

@@ -26,6 +26,8 @@ the original file, so changes are instant and undoable until you render.
 | `tune_rough_cut` | Re-plan with more or less breathing room, fillers on or off |
 | `suggest_shorts` / `add_shorts` | Heuristic shortlist, or Claude's own picks |
 | `set_caption_style` | `bold`, `clean`, or `karaoke` (active word highlighted) |
+| `add_title` / `add_lower_third` / `add_zoom` | Motion graphics: animated titles, sliding name bars, smooth punch-in zooms |
+| `make_montage` / `list_transitions` | Join clips with fade, dissolve, wipe, slide, smooth, zoom, circle or blur transitions |
 | `render` | Long cut, Shorts (1080x1920, captions burned in), or a fast 480p preview |
 | `get_project` | Current lengths, cuts, Shorts, output files |
 
@@ -54,9 +56,11 @@ Then ask: "Make a project from ~/Videos/episode12.mp4, clean it up, cut the spon
 ## Status and next steps
 
 Working: silence and filler removal, user cuts, Shorts with silence removed inside them, 9:16 center
-crop, three caption styles, MCP server, CLI.
+crop, three caption styles, motion graphics (titles, lower thirds, zooms), transitions, MCP server, CLI.
 
 Next:
+0. AI scene edits ("put my car in space", recolour an object, swap the background) through a
+   video-to-video model provider.
 1. Upload page with signed URLs to object storage (the server currently reads local files).
 2. Face-tracked reframing instead of center crop.
 3. Hosted transcription (Deepgram or AssemblyAI) for speed; Whisper stays as the local option.

@@ -67,11 +67,24 @@ class CaptionStyle(BaseModel):
     words_per_line: int = 3
 
 
+class Overlay(BaseModel):
+    """A motion-graphics element, timed in OUTPUT seconds of the video it is drawn on."""
+
+    kind: str  # title | lower_third | zoom
+    start: float
+    end: float
+    text: str = ""
+    subtitle: str = ""
+    target: str = "long"  # long | shorts | montage | all
+    zoom: float = 1.15  # for kind=zoom
+
+
 class EditList(BaseModel):
     keep: list[Range] = Field(default_factory=list)
     removed: list[Range] = Field(default_factory=list)  # user-requested cuts, kept so they survive re-planning
     shorts: list[Short] = Field(default_factory=list)
     captions: CaptionStyle = Field(default_factory=CaptionStyle)
+    overlays: list[Overlay] = Field(default_factory=list)
 
 
 class MediaInfo(BaseModel):
