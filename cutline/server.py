@@ -152,6 +152,19 @@ def list_transitions() -> list[str]:
 
 
 @mcp.tool()
+def ai_edit_scene(
+    project_id: str, start: float, end: float, prompt: str, model: str = "kling-o3", quality: str | None = None
+) -> dict:
+    """Generative edit of one moment (SOURCE seconds), e.g. "put the car in outer space, keep its motion",
+    "make the car glossy red", "replace the background with a neon city at night". Write the prompt as a
+    direct instruction and say what must stay unchanged. Clip length limits: kling-o3 3-15.5s,
+    kling-omni 3-10s, seedance 4-15s. Costs money per second, so confirm with the creator first.
+    quality: kling std/pro/4k, seedance 480p/720p/1080p. Returns the new clip's path. Takes a few minutes."""
+    e = P.ai_edit(P.load(project_id), start, end, prompt, model, quality)
+    return e.model_dump()
+
+
+@mcp.tool()
 def render(project_id: str, what: str = "all", preview: bool = False) -> dict:
     """Render outputs. what: long, shorts, or all. preview=True makes a fast 480p long-form preview."""
     p = P.load(project_id)

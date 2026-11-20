@@ -79,12 +79,24 @@ class Overlay(BaseModel):
     zoom: float = 1.15  # for kind=zoom
 
 
+class AiEdit(BaseModel):
+    """A generative edit of one moment of the source (SOURCE seconds)."""
+
+    prompt: str
+    start: float
+    end: float
+    model: str
+    request_id: str | None = None
+    output: str | None = None
+
+
 class EditList(BaseModel):
     keep: list[Range] = Field(default_factory=list)
     removed: list[Range] = Field(default_factory=list)  # user-requested cuts, kept so they survive re-planning
     shorts: list[Short] = Field(default_factory=list)
     captions: CaptionStyle = Field(default_factory=CaptionStyle)
     overlays: list[Overlay] = Field(default_factory=list)
+    ai_edits: list[AiEdit] = Field(default_factory=list)
 
 
 class MediaInfo(BaseModel):
