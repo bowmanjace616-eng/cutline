@@ -1,0 +1,7 @@
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.talkcut/
+*.mp4
+*.wav
+*.ass
