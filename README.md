@@ -28,6 +28,7 @@ the original file, so changes are instant and undoable until you render.
 | `set_caption_style` | `bold`, `clean`, or `karaoke` (active word highlighted) |
 | `add_title` / `add_lower_third` / `add_zoom` | Motion graphics: animated titles, sliding name bars, smooth punch-in zooms |
 | `make_montage` / `list_transitions` | Join clips with fade, dissolve, wipe, slide, smooth, zoom, circle or blur transitions |
+| `ai_edit_scene` | AI scene edit of one moment via Higgsfield: "put the car in space", "make it red", "swap the background" |
 | `render` | Long cut, Shorts (1080x1920, captions burned in), or a fast 480p preview |
 | `get_project` | Current lengths, cuts, Shorts, output files |
 
@@ -42,6 +43,14 @@ pytest                                # end-to-end tests on a synthetic video
 cutline auto my_video.mp4             # no chat: rough cut + 5 Shorts
 cutline-mcp                           # MCP over stdio (Claude Desktop / Claude Code)
 cutline-mcp --http 8000               # MCP over HTTP, for a remote connector
+```
+
+AI scene edits use the [Higgsfield API](https://docs.higgsfield.ai/docs). Create a key at
+console.higgsfield.ai (prepaid balance, separate from higgsfield.ai app credits) and set:
+
+```bash
+export HIGGSFIELD_API_KEY_ID=...
+export HIGGSFIELD_API_KEY_SECRET=...
 ```
 
 Claude Desktop config (`claude_desktop_config.json`):
@@ -59,8 +68,7 @@ Working: silence and filler removal, user cuts, Shorts with silence removed insi
 crop, three caption styles, motion graphics (titles, lower thirds, zooms), transitions, MCP server, CLI.
 
 Next:
-0. AI scene edits ("put my car in space", recolour an object, swap the background) through a
-   video-to-video model provider.
+0. Splice AI-edited clips back into the long cut and Shorts (today they come out as separate clips).
 1. Upload page with signed URLs to object storage (the server currently reads local files).
 2. Face-tracked reframing instead of center crop.
 3. Hosted transcription (Deepgram or AssemblyAI) for speed; Whisper stays as the local option.

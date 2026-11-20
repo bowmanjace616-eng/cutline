@@ -10,7 +10,7 @@ from pathlib import Path
 import tempfile
 
 from . import captions, media, motion, render, rough_cut, shorts
-from .models import CaptionStyle, Overlay, Project, Range, Short
+from .models import AiEdit, CaptionStyle, Overlay, Project, Range, Short
 
 
 def home() -> Path:
@@ -140,6 +140,24 @@ def make_montage(
     return out
 
 
+def ai_edit(p: Project, start: float, end: float, prompt: str, model: str | None = None,
+            quality: str | None = None, client=None) -> AiEdit:
+    """Run a generative edit on one moment and save the result as a new clip."""
+    from . import generative
+
+    model = model or generative.DEFAULT_MODEL
+    if not (0 <= start < end <= p.media.duration + 0.01):
+        raise ValueError(f"Bad range {start}-{end}")
+    n = len(p.edits.ai_edits) + 1
+    out = str(_dir(p.id) / f"ai_{n:02d}_{_slug(prompt)}.mp4")
+    result = generative.edit_scene(p.source, start, end, prompt, out, model=model, quality=quality, client=client)
+    e = AiEdit(prompt=prompt, start=start, end=end, model=model, request_id=result.request_id, output=out)
+    p.edits.ai_edits.append(e)
+    p.outputs[f"ai_{n}"] = out
+    save(p)
+    return e
+
+
 def _slug(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")[:40] or "short"
 
@@ -195,5 +213,6 @@ def summary(p: Project) -> dict:
         "transcribed_words": len(p.transcript.words) if p.transcript else 0,
         "shorts": [s.model_dump() for s in p.edits.shorts],
         "overlays": [o.model_dump() for o in p.edits.overlays],
+        "ai_edits": [e.model_dump() for e in p.edits.ai_edits],
         "outputs": p.outputs,
     }
