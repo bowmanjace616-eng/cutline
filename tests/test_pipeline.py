@@ -84,4 +84,35 @@ def test_mcp_tools_registered():
     from cutline.server import mcp
 
     names = {t.name for t in asyncio.run(mcp.list_tools())}
-    assert {"create_project", "analyze", "get_transcript", "remove_ranges", "add_shorts", "render"} <= names
+    assert {"create_project", "analyze", "get_transcript", "remove_ranges", "add_shorts", "render",
+            "add_title", "add_lower_third", "add_zoom", "make_montage"} <= names
+
+
+def test_overlays_render(video):
+    from cutline.models import Overlay
+
+    p = P.create(video)
+    P.analyze(p, do_transcribe=False)
+    P.add_overlay(p, Overlay(kind="title", text="Where strategy happens", subtitle="Episode 12", start=0.2, end=2.5))
+    P.add_overlay(p, Overlay(kind="lower_third", text="Jace's: \"Cutline\"", subtitle="Founder", start=3, end=6))
+    P.add_overlay(p, Overlay(kind="zoom", start=6, end=8, zoom=1.2))
+    out = P.render_long(p)
+    info = media.probe(out)
+    assert (info.width, info.height) == (1280, 720)
+    assert info.duration == pytest.approx(P.summary(p)["cut_seconds"], abs=0.3)
+
+
+@pytest.mark.parametrize("style", ["fade", "slide", "zoom"])
+def test_montage_transitions(video, style):
+    p = P.create(video)
+    segs = [Range(start=0, end=3), Range(start=5, end=9), Range(start=12, end=16)]
+    out = P.make_montage(p, segs, transition=style, seconds=0.5)
+    # 3 + 4 + 4 seconds minus two 0.5s overlaps
+    assert media.probe(out).duration == pytest.approx(10.0, abs=0.25)
+
+
+def test_montage_vertical(video):
+    p = P.create(video)
+    out = P.make_montage(p, [Range(start=0, end=3), Range(start=5, end=9)], vertical=True)
+    info = media.probe(out)
+    assert (info.width, info.height) == (1080, 1920)

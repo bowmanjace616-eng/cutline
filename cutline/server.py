@@ -14,15 +14,18 @@ import sys
 from mcp.server.mcpserver import MCPServer
 
 from . import project as P
-from .models import CaptionStyle, Range, Short
+from .models import CaptionStyle, Overlay, Range, Short
+from .motion import TRANSITIONS
 
 mcp = MCPServer(
     name="cutline",
     instructions=(
         "Cutline edits talking-head videos. Typical flow: create_project -> analyze -> review get_transcript "
         "-> remove_ranges for anything the creator wants gone -> pick 3-5 strong, self-contained moments "
-        "of 15-60s (start on a hook, end on a payoff) and call add_shorts -> render. All times are seconds "
-        "in the ORIGINAL source video. Edits are non-destructive; nothing is re-encoded until render."
+        "of 15-60s (start on a hook, end on a payoff) and call add_shorts -> render. Cut and Short times "
+        "are seconds in the ORIGINAL source; motion graphics (add_title, add_lower_third, add_zoom) are "
+        "timed in seconds of the OUTPUT video. make_montage joins source segments with transitions. "
+        "Edits are non-destructive; nothing is re-encoded until render."
     ),
 )
 
@@ -91,6 +94,61 @@ def set_caption_style(
     """Caption look for Shorts. preset: bold (uppercase, heavy outline), clean, or karaoke (active word highlighted)."""
     style = CaptionStyle(preset=preset, color=color, highlight=highlight, words_per_line=words_per_line)
     return P.summary(P.set_captions(P.load(project_id), style))
+
+
+@mcp.tool()
+def add_title(
+    project_id: str, text: str, start: float, end: float, subtitle: str = "", target: str = "long"
+) -> dict:
+    """Animated title (fades and rises in, fades out). Times are OUTPUT seconds of the target video.
+    target: long, shorts (same timing on every Short), montage, or all."""
+    o = Overlay(kind="title", text=text, subtitle=subtitle, start=start, end=end, target=target)
+    return P.summary(P.add_overlay(P.load(project_id), o))
+
+
+@mcp.tool()
+def add_lower_third(
+    project_id: str, text: str, start: float, end: float, subtitle: str = "", target: str = "long"
+) -> dict:
+    """Name bar that slides in from the left, e.g. text="Jace Bowman", subtitle="Founder, Cutline".
+    Times are OUTPUT seconds of the target video."""
+    o = Overlay(kind="lower_third", text=text, subtitle=subtitle, start=start, end=end, target=target)
+    return P.summary(P.add_overlay(P.load(project_id), o))
+
+
+@mcp.tool()
+def add_zoom(project_id: str, start: float, end: float, zoom: float = 1.15, target: str = "long") -> dict:
+    """Smooth punch-in zoom to emphasise a line. zoom 1.1-1.3 looks natural. OUTPUT seconds."""
+    o = Overlay(kind="zoom", start=start, end=end, zoom=zoom, target=target)
+    return P.summary(P.add_overlay(P.load(project_id), o))
+
+
+@mcp.tool()
+def clear_overlays(project_id: str, target: str | None = None) -> dict:
+    """Remove motion graphics, all of them or only those for one target."""
+    return P.summary(P.clear_overlays(P.load(project_id), target))
+
+
+@mcp.tool()
+def make_montage(
+    project_id: str,
+    segments: list[Range],
+    transition: str = "fade",
+    transition_seconds: float = 0.5,
+    vertical: bool = False,
+    name: str = "montage",
+) -> dict:
+    """Join source segments (SOURCE seconds, in the order given) with smooth transitions, e.g. a highlight
+    reel or trailer. transition: fade, dissolve, fadeblack, wipe, slide, smooth, zoom, circle, blur.
+    Overlays with target montage or all are drawn on top."""
+    out = P.make_montage(P.load(project_id), segments, transition, transition_seconds, vertical, name)
+    return {"output": out, **P.summary(P.load(project_id))}
+
+
+@mcp.tool()
+def list_transitions() -> list[str]:
+    """Transition styles available to make_montage."""
+    return list(TRANSITIONS)
 
 
 @mcp.tool()

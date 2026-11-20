@@ -7,8 +7,10 @@ import re
 import uuid
 from pathlib import Path
 
-from . import captions, media, render, rough_cut, shorts
-from .models import CaptionStyle, Project, Range, Short
+import tempfile
+
+from . import captions, media, motion, render, rough_cut, shorts
+from .models import CaptionStyle, Overlay, Project, Range, Short
 
 
 def home() -> Path:
@@ -98,6 +100,46 @@ def set_captions(p: Project, style: CaptionStyle) -> Project:
     return p
 
 
+def add_overlay(p: Project, o: Overlay) -> Project:
+    if o.kind not in ("title", "lower_third", "zoom"):
+        raise ValueError("kind must be title, lower_third or zoom")
+    if o.end <= o.start:
+        raise ValueError("Overlay end must be after start")
+    p.edits.overlays.append(o)
+    save(p)
+    return p
+
+
+def clear_overlays(p: Project, target: str | None = None) -> Project:
+    p.edits.overlays = [o for o in p.edits.overlays if target and o.target != target and o.target != "all"]
+    save(p)
+    return p
+
+
+def _overlay_filters(p: Project, target: str, w: int, h: int) -> list[str]:
+    chosen = [o for o in p.edits.overlays if o.target in (target, "all")]
+    return motion.overlay_filters(chosen, w, h, tempfile.mkdtemp(prefix="cutline-")) if chosen else []
+
+
+def make_montage(
+    p: Project, segments: list[Range], transition: str = "fade", seconds: float = 0.5,
+    vertical: bool = False, name: str = "montage",
+) -> str:
+    for s in segments:
+        if not (0 <= s.start < s.end <= p.media.duration + 0.01):
+            raise ValueError(f"Bad segment {s.start}-{s.end}")
+    w, h = p.media.width or 1920, p.media.height or 1080
+    out = str(_dir(p.id) / f"{_slug(name)}.mp4")
+    motion.montage(
+        p.source, segments, out, transition, seconds, has_audio=p.media.has_audio, vertical=vertical,
+        overlays=[o for o in p.edits.overlays if o.target in ("montage", "all")],
+        size=(w - w % 2, h - h % 2),
+    )
+    p.outputs[_slug(name)] = out
+    save(p)
+    return out
+
+
 def _slug(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")[:40] or "short"
 
@@ -112,7 +154,9 @@ def render_long(p: Project, preview: bool = False, burn_captions: bool = False) 
             captions.build_ass(p.transcript.words, p.edits.keep, p.edits.captions,
                                p.media.width or 1920, p.media.height or 1080)
         )
-    render.render(p.source, p.edits.keep, out, ass_path=ass, has_audio=p.media.has_audio, preview=preview)
+    extra = [] if preview else _overlay_filters(p, "long", p.media.width or 1920, p.media.height or 1080)
+    render.render(p.source, p.edits.keep, out, ass_path=ass, has_audio=p.media.has_audio, preview=preview,
+                  extra_filters=extra)
     p.outputs["preview" if preview else "long"] = out
     save(p)
     return out
@@ -130,7 +174,8 @@ def render_shorts(p: Project, captions_on: bool = True) -> list[str]:
             ass = str(d / f"short_{i}.ass")
             Path(ass).write_text(captions.build_ass(p.transcript.words, keep, p.edits.captions, 1080, 1920))
         out = str(d / f"short_{i:02d}_{_slug(s.title)}.mp4")
-        render.render(p.source, keep, out, vertical=True, ass_path=ass, has_audio=p.media.has_audio)
+        render.render(p.source, keep, out, vertical=True, ass_path=ass, has_audio=p.media.has_audio,
+                      extra_filters=_overlay_filters(p, "shorts", 1080, 1920))
         p.outputs[f"short_{i}"] = out
         outs.append(out)
     save(p)
@@ -149,5 +194,6 @@ def summary(p: Project) -> dict:
         "silences_found": len(p.silences),
         "transcribed_words": len(p.transcript.words) if p.transcript else 0,
         "shorts": [s.model_dump() for s in p.edits.shorts],
+        "overlays": [o.model_dump() for o in p.edits.overlays],
         "outputs": p.outputs,
     }
