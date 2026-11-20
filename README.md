@@ -29,6 +29,31 @@ the original file, so changes are instant and undoable until you render.
 | `render` | Long cut, Shorts (1080x1920, captions burned in), or a fast 480p preview |
 | `get_project` | Current lengths, cuts, Shorts, output files |
 
+## Web app
+
+`cutline-web` serves the marketing site at `/` and the editor at `/app`:
+
+- Upload a video (drag and drop), then Cutline cuts silences and ums and makes captioned Shorts automatically.
+- Watch the long cut and each Short in the browser, and download the MP4s.
+- **Edit by chatting**: "cut the sponsor read", "give me 2 more Shorts", "karaoke captions". Claude drives
+  the same tools the MCP connector exposes (the list is read from the MCP server, so new tools show up in
+  the chat automatically). Needs `ANTHROPIC_API_KEY` set on the server; without it, the rest of the app
+  still works and the chat box says it's off.
+- Waitlist form on the landing page writes to `$CUTLINE_HOME/waitlist.jsonl`.
+
+```bash
+pip install -e '.[web,transcribe]'
+cutline-web                           # http://localhost:8080
+docker build -t cutline . && docker run -p 8080:8080 -v cutline-data:/data cutline
+```
+
+Code: `cutline/web.py` (Starlette API + background jobs), `cutline/agent.py` (Claude tool loop),
+`cutline/site/` (plain HTML/CSS/JS, no build step). The landing page is a single static file, so it can
+also go on GitHub Pages; set `<meta name="cutline-api">` in `site/index.html` to the app's URL.
+
+Not built yet: accounts and sign-in, per-user storage limits, billing, and a real job queue (jobs run in
+threads, so one server handles a handful of creators at once).
+
 ## Run it
 
 Needs Python 3.11+ and FFmpeg with libass.

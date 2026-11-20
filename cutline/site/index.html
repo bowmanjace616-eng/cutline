@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cutline · Edit your video by talking to it</title>
+  <meta name="description" content="Cutline is an AI video editor for YouTubers. Upload one video and get a tight long-form cut plus captioned Shorts. Then ask for changes in plain English.">
+  <meta property="og:title" content="Cutline · Edit your video by talking to it">
+  <meta property="og:description" content="One upload, a clean long cut and ready-to-post Shorts. Edit by chatting.">
+  <!-- Where the app and waitlist API live. Empty = same server as this page. -->
+  <meta name="cutline-api" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ffd400'/%3E%3Cpath d='M15 -2 L21 34' stroke='%230b0b0f' stroke-width='5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="logo" href="#"><span class="logo-mark"></span>Cutline</a>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#claude">Inside Claude</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn sm primary" href="app" data-app-link>Open the app</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="pill"><b>New</b> AI scene edits: "put my car in space"</span>
+    <h1>Film it once. <em>Talk it</em> into a long video and a week of Shorts.</h1>
+    <p class="lead">Cutline is the AI editor for YouTubers. Upload your raw recording and get a tight long-form cut with the silences and ums gone, plus vertical Shorts with captions. Want changes? Just say so.</p>
+    <div class="ctas">
+      <a class="btn primary" href="app" data-app-link>Edit a video free</a>
+      <a class="btn" href="#waitlist">Join the beta</a>
+    </div>
+    <small>No timeline. No export settings. Free while in beta.</small>
+
+    <div class="mock" aria-label="Cutline editor preview">
+      <div class="mock-bar"><i></i><i></i><i></i></div>
+      <div class="mock-body">
+        <div class="mock-stage">
+          <div class="mock-player"><div class="face"></div><div class="body"></div><div class="cap">THIS IS WHY <span>HOOKS</span> MATTER</div></div>
+          <div class="timeline" aria-hidden="true">
+            <span style="--w:3"></span><span class="cut" style="--w:1"></span><span class="short" style="--w:4"></span><span class="cut" style="--w:.6"></span><span style="--w:5"></span><span class="cut" style="--w:2"></span><span class="short" style="--w:3"></span><span style="--w:4"></span>
+          </div>
+          <div class="legend"><span><i style="background:#34345a"></i>Kept</span><span><i style="background:#3a1f2a"></i>Cut: silence, ums, the sponsor read</span><span><i style="background:var(--violet)"></i>Shorts</span></div>
+        </div>
+        <div class="mock-chat">
+          <div class="bubble me">Clean this up, drop the sponsor bit, and give me 3 Shorts with karaoke captions.</div>
+          <div class="bubble tool">Cut 41 silences and 23 filler words</div>
+          <div class="bubble tool">Removed 1:12 to 2:04</div>
+          <div class="bubble tool">Rendered 3 Shorts, 1080×1920</div>
+          <div class="bubble ai">Done. Your 18-minute recording is now 12:40. The Shorts open on your three strongest hooks: "nobody tells you this", the camera test, and the price reveal.</div>
+          <div class="bubble me">Add a title card at the start that says "I tested every budget camera".</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="logos">
+  <div class="wrap">
+    Made for the way creators actually publish
+    <div class="row"><span>YouTube</span><span>Shorts</span><span>TikTok</span><span>Reels</span><span>Podcasts</span></div>
+  </div>
+</div>
+
+<section id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">How it works</div>
+      <h2>From raw recording to posted in three steps.</h2>
+      <p>Cutline does the tedious part of editing in minutes, so you spend your time on the next video.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><h3>Upload once</h3><p>Drop in your talking-head recording, podcast or vlog. Cutline transcribes it with word-level timing.</p></div>
+      <div class="step"><h3>Get the first cut</h3><p>Silences and filler words are gone, and the best 15 to 60 second moments become vertical Shorts with captions.</p></div>
+      <div class="step"><h3>Ask for changes</h3><p>"Cut the tangent about my cat." "Make the captions yellow." "Zoom in on the punchline." Every edit is undoable.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="features" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Features</div>
+      <h2>Everything between &ldquo;I hit record&rdquo; and &ldquo;I hit publish&rdquo;.</h2>
+    </div>
+    <div class="features">
+      <div class="feature wide">
+        <div class="ico"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></svg></div>
+        <h3>Rough cut on autopilot</h3>
+        <p>Dead air, "um", "uh" and false starts come out automatically, with natural breathing room left in so it never sounds robotic.</p>
+        <div class="prompt">leave a bit more pause between sentences</div>
+      </div>
+      <div class="feature wide">
+        <div class="ico"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M10 18h4"/></svg></div>
+        <h3>Long video to Shorts</h3>
+        <p>Cutline reads your transcript and picks moments that open on a hook and land a payoff, then reframes them to 9:16 with burned-in captions.</p>
+        <div class="prompt">give me 5 Shorts, karaoke captions</div>
+      </div>
+      <div class="feature">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg></div>
+        <h3>Captions that pop</h3>
+        <p>Bold, clean or karaoke styles with the active word highlighted. Your colors, your words per line.</p>
+      </div>
+      <div class="feature">
+        <span class="tag">Beta</span>
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div>
+        <h3>Motion graphics</h3>
+        <p>Animated titles, lower thirds, punch-in zooms and smooth transitions, placed by describing them.</p>
+      </div>
+      <div class="feature">
+        <span class="tag">Beta</span>
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.8L20 10l-5 3.6L16.8 20 12 16.3 7.2 20 9 13.6 4 10l6.1-1.2z"/></svg></div>
+        <h3>AI scene edits</h3>
+        <p>Change what's in the shot: swap the background, recolor a product, or put your car in space. Motion stays intact.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap split">
+    <div>
+      <div class="eyebrow">One workflow</div>
+      <h2 style="font-size:clamp(30px,4.2vw,46px)">Your long video and your Shorts come from the same edit.</h2>
+      <ul class="checks">
+        <li><b>Cut once, use everywhere.</b> Remove the sponsor read and it's gone from the Shorts too.</li>
+        <li><b>Silence removed inside Shorts.</b> They feel fast without you trimming each one.</li>
+        <li><b>Non-destructive.</b> Your original file is never touched. Undo anything, any time.</li>
+        <li><b>Download and post.</b> MP4s ready for YouTube, Shorts, TikTok and Reels.</li>
+      </ul>
+    </div>
+    <div class="phones" aria-hidden="true">
+      <div class="phone"><div class="t">Short 1 · 0:38</div><div class="cap">NOBODY <span>TELLS</span> YOU THIS</div></div>
+      <div class="phone"><div class="t">Short 2 · 0:52</div><div class="cap">THE <span>$90</span> CAMERA WON</div></div>
+      <div class="phone"><div class="t">Short 3 · 0:27</div><div class="cap">WAIT FOR <span>IT</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="claude" style="padding-top:0">
+  <div class="wrap split">
+    <div class="table-scroll">
+      <table class="compare">
+        <thead><tr><th></th><th>Timeline editor</th><th>Clip tools</th><th class="us">Cutline</th></tr></thead>
+        <tbody>
+          <tr><td>Edit by chatting</td><td class="no">—</td><td class="no">—</td><td class="us yes">✓</td></tr>
+          <tr><td>Long cut + Shorts in one go</td><td class="no">—</td><td class="no">Shorts only</td><td class="us yes">✓</td></tr>
+          <tr><td>Silence and filler removal</td><td class="no">Manual</td><td class="yes">✓</td><td class="us yes">✓</td></tr>
+          <tr><td>AI scene edits</td><td class="no">—</td><td class="no">—</td><td class="us yes">✓</td></tr>
+          <tr><td>Works inside Claude</td><td class="no">—</td><td class="no">—</td><td class="us yes">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="eyebrow">Inside Claude</div>
+      <h2 style="font-size:clamp(30px,4.2vw,46px)">Already use Claude? Edit there.</h2>
+      <p style="color:var(--muted);font-size:18px">Cutline also ships as a Claude connector. Add it once and ask Claude to edit your videos in the same chat where you write your scripts and titles.</p>
+      <div class="prompt" style="max-width:520px">Make a project from episode12.mp4, cut the sponsor read, and give me 4 Shorts with karaoke captions.</div>
+    </div>
+  </div>
+</section>
+
+<section id="waitlist" style="padding-top:0">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Get early access.</h2>
+      <p>Cutline is free during the beta. Join and we'll set you up, and you'll get a say in what we build next.</p>
+      <form class="waitlist" id="waitlist-form">
+        <input type="email" name="email" placeholder="you@email.com" required aria-label="Email">
+        <input type="text" name="channel" placeholder="Your channel (optional)" aria-label="Channel">
+        <button class="btn primary" type="submit">Join the beta</button>
+      </form>
+      <div class="form-msg" id="waitlist-msg" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head center" style="text-align:center"><h2>Questions</h2></div>
+    <div class="faq">
+      <details><summary>What kind of videos does it work best on?</summary><p>Anything where someone is talking: talking-head YouTube videos, tutorials, podcasts, vlogs, reviews. Cutline uses the transcript to decide what to cut and which moments make good Shorts.</p></details>
+      <details><summary>Will it ruin my original footage?</summary><p>No. Every edit is a list of instructions over your original file. Nothing is re-encoded until you render, and you can undo any change.</p></details>
+      <details><summary>How long does it take?</summary><p>A 10-minute video usually takes a few minutes for the first cut and Shorts. AI scene edits take a few minutes per clip because the new footage is generated.</p></details>
+      <details><summary>How much does it cost?</summary><p>Free during the beta. AI scene edits use paid video generation, so those will be metered when we launch paid plans.</p></details>
+      <details><summary>Do I need Claude to use it?</summary><p>No. The web app works on its own. If you already use Claude, you can also add Cutline as a connector and edit from your chat.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="year"></span> Cutline</span>
+    <span><a href="app" data-app-link>App</a> · <a href="https://github.com/bowmanjace616-eng/cutline">GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+  const API = document.querySelector('meta[name="cutline-api"]').content.replace(/\/$/, "");
+  if (API) document.querySelectorAll("[data-app-link]").forEach(a => a.href = API + "/app");
+  document.getElementById("year").textContent = new Date().getFullYear();
+  const form = document.getElementById("waitlist-form"), msg = document.getElementById("waitlist-msg");
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form));
+    msg.className = "form-msg"; msg.textContent = "Adding you…";
+    try {
+      const r = await fetch(API + "/api/waitlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.error || "Something went wrong");
+      form.reset(); msg.className = "form-msg ok"; msg.textContent = "You're on the list. We'll be in touch soon.";
+    } catch (err) {
+      msg.className = "form-msg err"; msg.textContent = err.message === "Failed to fetch" ? "Couldn't reach the server. Try again in a minute." : err.message;
+    }
+  });
+</script>
+</body>
+</html>
