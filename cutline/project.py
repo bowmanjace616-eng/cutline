@@ -12,7 +12,7 @@ from .models import CaptionStyle, Project, Range, Short
 
 
 def home() -> Path:
-    p = Path(os.environ.get("TALKCUT_HOME", Path.home() / ".talkcut")) / "projects"
+    p = Path(os.environ.get("CUTLINE_HOME", Path.home() / ".cutline")) / "projects"
     p.mkdir(parents=True, exist_ok=True)
     return p
 

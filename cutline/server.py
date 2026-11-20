@@ -3,8 +3,8 @@
 Claude does the reasoning (which moments make good Shorts, which part is "the sponsor bit");
 this server does the video work. Run locally with stdio, or as a remote connector over HTTP:
 
-    talkcut-mcp                 # stdio, for Claude Desktop / Claude Code
-    talkcut-mcp --http 8000     # streamable HTTP, for a remote connector
+    cutline-mcp                 # stdio, for Claude Desktop / Claude Code
+    cutline-mcp --http 8000     # streamable HTTP, for a remote connector
 """
 
 from __future__ import annotations
@@ -17,9 +17,9 @@ from . import project as P
 from .models import CaptionStyle, Range, Short
 
 mcp = MCPServer(
-    name="talkcut",
+    name="cutline",
     instructions=(
-        "Talkcut edits talking-head videos. Typical flow: create_project -> analyze -> review get_transcript "
+        "Cutline edits talking-head videos. Typical flow: create_project -> analyze -> review get_transcript "
         "-> remove_ranges for anything the creator wants gone -> pick 3-5 strong, self-contained moments "
         "of 15-60s (start on a hook, end on a payoff) and call add_shorts -> render. All times are seconds "
         "in the ORIGINAL source video. Edits are non-destructive; nothing is re-encoded until render."

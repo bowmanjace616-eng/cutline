@@ -5,8 +5,8 @@ import subprocess
 
 import pytest
 
-from talkcut import media, project as P, rough_cut
-from talkcut.models import Range, Short, Transcript, Word
+from cutline import media, project as P, rough_cut
+from cutline.models import Range, Short, Transcript, Word
 
 # 0-3s tone, 3-5s silence, 5-9s tone, 9-12s silence, 12-16s tone  (16s total, 5s silent)
 TONE = "between(t,0,3)+between(t,5,9)+between(t,12,16)"
@@ -14,7 +14,7 @@ TONE = "between(t,0,3)+between(t,5,9)+between(t,12,16)"
 
 @pytest.fixture
 def video(tmp_path, monkeypatch):
-    monkeypatch.setenv("TALKCUT_HOME", str(tmp_path / "home"))
+    monkeypatch.setenv("CUTLINE_HOME", str(tmp_path / "home"))
     out = tmp_path / "talk.mp4"
     subprocess.run([
         "ffmpeg", "-y", "-loglevel", "error",
@@ -81,7 +81,7 @@ def test_restore(video):
 
 
 def test_mcp_tools_registered():
-    from talkcut.server import mcp
+    from cutline.server import mcp
 
     names = {t.name for t in asyncio.run(mcp.list_tools())}
     assert {"create_project", "analyze", "get_transcript", "remove_ranges", "add_shorts", "render"} <= names

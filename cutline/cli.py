@@ -1,4 +1,4 @@
-"""talkcut auto VIDEO: rough cut + Shorts in one command, no chat needed."""
+"""cutline auto VIDEO: rough cut + Shorts in one command, no chat needed."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from . import project as P
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(prog="talkcut")
+    ap = argparse.ArgumentParser(prog="cutline")
     sub = ap.add_subparsers(dest="cmd", required=True)
     a = sub.add_parser("auto", help="Cut silences and ums, then make Shorts")
     a.add_argument("video")

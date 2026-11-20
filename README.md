@@ -1,4 +1,4 @@
-# Talkcut (working name)
+# Cutline
 
 Edit long videos and make Shorts by talking to Claude. Upload a talking-head video, and Claude
 cuts silences and filler words, removes what you ask, picks Short-worthy moments, and renders a
@@ -7,7 +7,7 @@ clean long cut plus vertical Shorts with captions.
 ## How it fits together
 
 ```
-Claude (chat)  --MCP tools-->  talkcut server  -->  FFmpeg / Whisper  -->  long_cut.mp4, short_01.mp4 ...
+Claude (chat)  --MCP tools-->  cutline server  -->  FFmpeg / Whisper  -->  long_cut.mp4, short_01.mp4 ...
    reasoning:                     edit list (JSON):
    which moments, what to cut     keep ranges, removed ranges, shorts, caption style
 ```
@@ -37,15 +37,15 @@ Needs Python 3.11+ and FFmpeg with libass.
 pip install -e '.[transcribe,dev]'
 pytest                                # end-to-end tests on a synthetic video
 
-talkcut auto my_video.mp4             # no chat: rough cut + 5 Shorts
-talkcut-mcp                           # MCP over stdio (Claude Desktop / Claude Code)
-talkcut-mcp --http 8000               # MCP over HTTP, for a remote connector
+cutline auto my_video.mp4             # no chat: rough cut + 5 Shorts
+cutline-mcp                           # MCP over stdio (Claude Desktop / Claude Code)
+cutline-mcp --http 8000               # MCP over HTTP, for a remote connector
 ```
 
 Claude Desktop config (`claude_desktop_config.json`):
 
 ```json
-{ "mcpServers": { "talkcut": { "command": "talkcut-mcp" } } }
+{ "mcpServers": { "cutline": { "command": "cutline-mcp" } } }
 ```
 
 Then ask: "Make a project from ~/Videos/episode12.mp4, clean it up, cut the sponsor read, and give me
