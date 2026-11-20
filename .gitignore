@@ -5,3 +5,5 @@ __pycache__/
 *.mp4
 *.wav
 *.ass
+node_modules/
+.env
