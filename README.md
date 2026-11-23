@@ -31,7 +31,7 @@ the original file, so changes are instant and undoable until you render.
 
 ## Web app
 
-`cutline-web` serves the marketing site at `/` and the editor at `/app`:
+`cutline-web` serves the marketing site at `/`, the Studio showcase at `/studio`, and the editor (a chat center) at `/app`:
 
 - Upload a video (drag and drop), then Cutline cuts silences and ums and makes captioned Shorts automatically.
 - Watch the long cut and each Short in the browser, and download the MP4s.
@@ -48,7 +48,7 @@ docker build -t cutline . && docker run -p 8080:8080 -v cutline-data:/data cutli
 ```
 
 Code: `cutline/web.py` (Starlette API + background jobs), `cutline/agent.py` (Claude tool loop),
-`cutline/site/` (plain HTML/CSS/JS, no build step). The landing page is a single static file, so it can
+`cutline/site/` (plain HTML/CSS/JS, no build step; showcase clips in `site/media/`). The landing page is a single static file, so it can
 also go on GitHub Pages; set `<meta name="cutline-api">` in `site/index.html` to the app's URL.
 
 Not built yet: accounts and sign-in, per-user storage limits, billing, and a real job queue (jobs run in

@@ -43,8 +43,10 @@ def wait(c, pid, timeout=60):
 
 def test_pages(client):
     assert "Cutline" in client.get("/").text
-    assert 'id="upload-view"' in client.get("/app").text
-    assert client.get("/static/app.js").status_code == 200
+    assert 'id="start-view"' in client.get("/app").text
+    assert "Studio" in client.get("/studio").text
+    for f in ("app.js", "common.js", "style.css", "media/motion.mp4"):
+        assert client.get(f"/static/{f}").status_code == 200, f
 
 
 def test_upload_auto_and_download(client, clip):

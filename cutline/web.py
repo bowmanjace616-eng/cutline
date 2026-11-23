@@ -245,12 +245,17 @@ async def app_page(request: Request):
     return FileResponse(SITE / "app.html")
 
 
+async def studio_page(request: Request):
+    return FileResponse(SITE / "studio.html")
+
+
 async def home_page(request: Request):
     return FileResponse(SITE / "index.html")
 
 
 routes = [
     Route("/", home_page),
+    Route("/studio", studio_page),
     Route("/app", app_page),
     Route("/app/", lambda r: RedirectResponse("/app")),
     Route("/api/projects", upload, methods=["POST"]),

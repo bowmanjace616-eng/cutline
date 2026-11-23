@@ -7,3 +7,4 @@ __pycache__/
 *.ass
 node_modules/
 .env
+!cutline/site/media/*.mp4
