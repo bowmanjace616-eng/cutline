@@ -22,7 +22,6 @@ jobs:
           python-version: "3.12"
       - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg fonts-liberation2
       - run: pip install '.[web,transcribe,dev]'
-      - run: cd scratch && bash ffexp.sh
       - run: pytest -q
 
   deploy:
