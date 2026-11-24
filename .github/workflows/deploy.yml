@@ -1,10 +1,11 @@
-# Ships main to cutline-app.com (Fly app cutline-b1svdw) on every push to main.
+# Tests every PR, and ships main to cutline-app.com (Fly app cutline-b1svdw) on every push to main.
 # Needs one repository secret, FLY_API_TOKEN (see DEPLOY.md, "Automatic deploys").
 name: Deploy to Fly
 
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch: {}
 
 concurrency:
@@ -25,6 +26,7 @@ jobs:
 
   deploy:
     needs: test
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

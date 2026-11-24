@@ -115,7 +115,11 @@ def _load_api(pid: str) -> list[dict]:
 
 
 def _save_chat(pid: str, visible: list[dict], api: list[dict]) -> None:
-    _chat_file(pid).write_text(json.dumps({"visible": visible, "api": api}))
+    # Write then rename: the page polls state while a chat turn saves, and must never read a half-written file.
+    f = _chat_file(pid)
+    tmp = f.with_name(f"chat.json.{os.getpid()}.{threading.get_ident()}.tmp")
+    tmp.write_text(json.dumps({"visible": visible, "api": api}))
+    os.replace(tmp, f)
 
 
 # ---- background jobs ----

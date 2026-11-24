@@ -45,13 +45,17 @@ def render(
     if has_audio:
         graph += f";[0:a]aselect='{sel}',asetpts=N/SR/TB[a]"
 
-    with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False) as f:
-        f.write(graph)
-        script = f.name
-    cmd = [
-        "ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", source,
-        "-filter_complex_script", script, "-map", "[v]",
-    ]
+    # Inline graph works on every FFmpeg. Very long edit lists go through a file: `-/filter_complex` on
+    # FFmpeg 7+, since `-filter_complex_script` is gone from newer releases.
+    script = None
+    if len(graph) < 100_000:
+        fc = ["-filter_complex", graph]
+    else:
+        with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False) as f:
+            f.write(graph)
+            script = f.name
+        fc = ["-/filter_complex", script]
+    cmd = ["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", source, *fc, "-map", "[v]"]
     if has_audio:
         cmd += ["-map", "[a]", "-c:a", "aac", "-b:a", "160k"]
     cmd += [
@@ -61,7 +65,8 @@ def render(
     try:
         r = subprocess.run(cmd, capture_output=True, text=True)
     finally:
-        os.unlink(script)
+        if script:
+            os.unlink(script)
     if r.returncode != 0:
         raise RuntimeError(f"ffmpeg render failed: {r.stderr.strip()[-2000:]}")
     return out_path
