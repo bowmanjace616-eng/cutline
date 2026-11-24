@@ -88,3 +88,14 @@ def test_mcp_tools_registered():
 
     names = {t.name for t in asyncio.run(mcp.list_tools())}
     assert {"create_project", "analyze", "get_transcript", "remove_ranges", "add_shorts", "render"} <= names
+
+
+def test_cut_audio_is_exact_and_in_order(video, tmp_path):
+    """Audio is cut range by range to the exact sample count (no drift), skipping what's between."""
+    from cutline import render
+
+    keep = [Range(start=0.5, end=2.0), Range(start=5.25, end=6.0), Range(start=12.0, end=13.1)]
+    raw = render.cut_audio(video, keep, str(tmp_path / "a.pcm"))
+    size = (tmp_path / "a.pcm").stat().st_size
+    assert size == sum(round((r.end - r.start) * render.AUDIO_RATE) for r in keep) * 4
+    assert raw.endswith("a.pcm")
