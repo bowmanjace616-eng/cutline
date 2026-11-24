@@ -26,8 +26,38 @@ the original file, so changes are instant and undoable until you render.
 | `tune_rough_cut` | Re-plan with more or less breathing room, fillers on or off |
 | `suggest_shorts` / `add_shorts` | Heuristic shortlist, or Claude's own picks |
 | `set_caption_style` | `bold`, `clean`, or `karaoke` (active word highlighted) |
+| `set_color_grade` | Lighting and color: presets (`darker`, `warm`, `cinematic`, `night`, `black_and_white`...) or brightness, contrast, saturation, gamma, warmth, vignette; whole video or a time range |
+| `add_text` / `update_text` / `remove_text` | Custom on-screen text in any font, size, color and position, with motion: fade, slide in from / out to any side, pop, zoom, blur, typewriter |
+| `list_fonts` | Fonts installed on the server |
 | `render` | Long cut, Shorts (1080x1920, captions burned in), or a fast 480p preview |
 | `get_project` | Current lengths, cuts, Shorts, output files |
+
+## Web app
+
+To put it online, see [DEPLOY.md](DEPLOY.md) (Fly.io, about $5 to $16/month).
+
+`cutline-web` serves the marketing site at `/`, the Studio showcase at `/studio`, and the editor (a chat center) at `/app`:
+
+- Upload a video (drag and drop), then Cutline cuts silences and ums and makes captioned Shorts automatically.
+- Watch the long cut and each Short in the browser, and download the MP4s.
+- **Edit by chatting**: "cut the sponsor read", "give me 2 more Shorts", "karaoke captions". Claude drives
+  the same tools the MCP connector exposes (the list is read from the MCP server, so new tools show up in
+  the chat automatically). Needs `ANTHROPIC_API_KEY` set on the server; without it, the rest of the app
+  still works and the chat box says it's off.
+- Waitlist form on the landing page writes to `$CUTLINE_HOME/waitlist.jsonl`.
+
+```bash
+pip install -e '.[web,transcribe]'
+cutline-web                           # http://localhost:8080
+docker build -t cutline . && docker run -p 8080:8080 -v cutline-data:/data cutline
+```
+
+Code: `cutline/web.py` (Starlette API + background jobs), `cutline/agent.py` (Claude tool loop),
+`cutline/site/` (plain HTML/CSS/JS, no build step; showcase clips in `site/media/`). The landing page is a single static file, so it can
+also go on GitHub Pages; set `<meta name="cutline-api">` in `site/index.html` to the app's URL.
+
+Not built yet: accounts and sign-in, per-user storage limits, billing, and a real job queue (jobs run in
+threads, so one server handles a handful of creators at once).
 
 ## Run it
 

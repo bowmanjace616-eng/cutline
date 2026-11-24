@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editor · Cutline</title>
+  <meta name="cutline-api" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/app.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232e5a8c'/%3E%3Cpath d='M14 -2 L20 34' stroke='white' stroke-width='5'/%3E%3C/svg%3E">
+</head>
+<body class="app">
+
+<aside class="side" id="side">
+  <div class="side-top">
+    <a class="logo" href="/"><span class="logo-mark"></span>Cutline</a>
+    <button class="icon-btn side-close" id="side-close" aria-label="Close menu"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <a class="btn primary new-btn" href="/app"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>New video</a>
+  <div class="side-label">Recent</div>
+  <nav class="recent" id="recent"><p class="side-empty">Your videos will show up here.</p></nav>
+  <div class="side-bottom">
+    <a href="/content"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.8L20 10l-5 3.6L16.8 20 12 16.3 7.2 20 9 13.6 4 10l6.1-1.2z"/></svg>Content Center</a>
+    <a href="/studio"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Studio</a>
+    <a href="/#claude"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Use in Claude</a>
+  </div>
+</aside>
+<div class="scrim" id="scrim"></div>
+
+<div class="main">
+  <header class="topbar">
+    <button class="icon-btn menu-btn" id="menu-btn" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <div class="topbar-title" id="proj-name"></div>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <!-- Start: prompt + upload -->
+  <main id="start-view" class="start">
+    <h1>What are we <span class="grad">making</span> today?</h1>
+    <p class="sub">Add a video, tell Cutline what you want, and watch it edit.</p>
+
+    <div class="composer-card" id="start-composer">
+      <textarea rows="3" placeholder="Describe the edit. For example: clean this up, cut the sponsor read, and give me 3 Shorts with karaoke captions."></textarea>
+      <div class="composer-row">
+        <div class="composer-left">
+          <button class="icon-btn" type="button" data-attach title="Add a video" aria-label="Add a video"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+          <input type="file" accept="video/*,.mp4,.mov,.m4v,.mkv,.webm" hidden>
+          <span data-file></span>
+          <label class="mini-select">Shorts <select id="opt-shorts"><option>0</option><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></label>
+          <label class="mini-select">Captions <select id="opt-captions"><option value="bold">Bold</option><option value="karaoke">Karaoke</option><option value="clean">Clean</option></select></label>
+        </div>
+        <button class="send-btn" type="button" aria-label="Start editing"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+      </div>
+      <div class="upbar" hidden><i></i></div>
+      <div class="composer-msg" role="status"></div>
+    </div>
+
+    <label class="dropzone" id="dropzone">
+      <svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>
+      <span><b>Drop a video anywhere</b> or click to choose · MP4, MOV, MKV, WebM</span>
+    </label>
+
+    <div class="chips" id="start-chips">
+      <button class="chip" data-prompt="Clean up my footage: cut the silences, ums and false starts, but keep it natural.">Clean up footage</button>
+      <button class="chip" data-prompt="Turn this into 4 Shorts. Pick moments that open on a hook, and use karaoke captions.">Make Shorts</button>
+      <button class="chip" data-prompt="Add an animated title at the start and a lower third with my name and channel.">Motion graphics</button>
+      <button class="chip" data-prompt="Put my car in outer space and make it glossy red. Keep the camera move the same.">AI scene edit</button>
+      <button class="chip" data-prompt="Make a 30-second highlight reel of the best moments with smooth transitions.">Highlight reel</button>
+      <button class="chip" data-prompt="This is a podcast episode. Find the 5 most quotable moments and make vertical clips.">Podcast clips</button>
+    </div>
+  </main>
+
+  <!-- Project: player + chat -->
+  <main id="editor-view" class="editor" hidden>
+    <section class="stage">
+      <div class="tabs" id="tabs"></div>
+      <div class="player">
+        <video id="video" controls playsinline></video>
+        <div class="empty" id="player-empty">
+          <div class="spinner" id="spinner"></div>
+          <p id="player-msg">Your edit will show up here.</p>
+        </div>
+      </div>
+      <div class="stage-foot">
+        <div class="status" id="status" hidden><span class="dot"></span><span id="status-text"></span></div>
+        <a class="btn sm" id="download" hidden download><svg viewBox="0 0 24 24"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"/></svg>Download</a>
+      </div>
+    </section>
+
+    <aside class="chat">
+      <div class="chat-head">
+        <strong>Chat</strong>
+        <span class="muted" id="chat-note"></span>
+      </div>
+      <div class="messages" id="messages">
+        <div class="hint" id="chat-hint">
+          <p>Tell Cutline what to change.</p>
+          <button class="chip">Cut the part where I talk about the sponsor</button>
+          <button class="chip">Give me 2 more Shorts about the main tip</button>
+          <button class="chip">Switch the captions to karaoke style</button>
+          <button class="chip">Leave a bit more pause between sentences</button>
+        </div>
+      </div>
+      <form class="chat-composer" id="composer">
+        <textarea id="input" rows="1" placeholder="Ask for an edit…"></textarea>
+        <button class="send-btn" id="send" type="submit" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+      </form>
+    </aside>
+  </main>
+</div>
+
+<script src="/static/common.js"></script>
+<script src="/static/app.js"></script>
+<div class="gate" id="gate" hidden>
+  <form class="gate-card" id="gate-form">
+    <span class="logo-mark"></span>
+    <h2>Cutline is in private beta</h2>
+    <p>Enter the access code from your invite to start editing. No code yet? <a href="/#waitlist">Join the waitlist</a>.</p>
+    <input id="gate-code" type="text" autocomplete="off" placeholder="Access code" aria-label="Access code" required>
+    <button class="btn primary" type="submit">Continue</button>
+    <p class="gate-msg" id="gate-msg"></p>
+  </form>
+</div>
+</body>
+</html>

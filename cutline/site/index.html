@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cutline · The AI video editor for creators</title>
+  <meta name="description" content="Upload one video. Cutline gives you a tight long-form cut, captioned Shorts, motion graphics and AI scene edits. Just tell it what you want.">
+  <meta property="og:title" content="Cutline · The AI video editor for creators">
+  <meta property="og:description" content="One upload. A clean long cut, ready-to-post Shorts, motion graphics and AI scene edits, all by chatting.">
+  <meta property="og:image" content="/static/media/motion.jpg">
+  <meta name="cutline-api" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/motion.css">
+  <script>document.documentElement.classList.add("js")</script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232e5a8c'/%3E%3Cpath d='M14 -2 L20 34' stroke='white' stroke-width='5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<a class="announce" href="/studio"><b>New</b> AI scene edits: put your car in space, swap your background, recolor anything <span>→</span></a>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="logo-mark"></span>Cutline</a>
+    <div class="nav-links">
+      <a href="/content">Content Center</a>
+      <a href="/studio">Studio</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn sm primary" href="/app" data-app-link>Try Cutline</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="floaters" aria-hidden="true">
+    <div class="floater f1"><video data-auto muted loop playsinline poster="/static/media/short.jpg" src="/static/media/short.mp4"></video><span class="chip-label">Short · captions</span></div>
+    <div class="floater f2"><video data-auto muted loop playsinline poster="/static/media/explainer.jpg" src="/static/media/explainer.mp4"></video><span class="chip-label">Explainer</span></div>
+    <div class="floater f3"><video data-auto muted loop playsinline poster="/static/media/motion.jpg" src="/static/media/motion.mp4"></video><span class="chip-label">Motion graphics</span></div>
+    <div class="floater f4"><div class="art space" style="position:absolute;inset:0"></div><span class="chip-label">AI scene edit</span></div>
+  </div>
+
+  <div class="wrap">
+    <h1 class="wordmark"><span class="grad">Cutline</span></h1>
+    <p class="tag"><b>The AI video editor for creators.</b> Upload once, then just say what you want.</p>
+
+    <div class="composer-card" id="hero-composer">
+      <textarea rows="3" placeholder="Drop in your video and tell Cutline what to make. For example: cut the silences and ums, drop the sponsor read, and give me 3 Shorts with bold captions."></textarea>
+      <div class="composer-row">
+        <div class="composer-left">
+          <button class="icon-btn" type="button" data-attach title="Add a video" aria-label="Add a video"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+          <input type="file" accept="video/*,.mp4,.mov,.m4v,.mkv,.webm" hidden>
+          <span data-file></span>
+        </div>
+        <button class="send-btn" type="button" aria-label="Start"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+      </div>
+      <div class="upbar" hidden><i></i></div>
+      <div class="composer-msg" role="status"></div>
+    </div>
+
+    <div class="chips" id="hero-chips">
+      <button class="chip" data-prompt="Clean up my footage: cut the silences, ums and false starts, but keep it natural."><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></svg>Clean up footage</button>
+      <button class="chip" data-prompt="Turn this into 4 Shorts. Pick moments that open on a hook, and use karaoke captions."><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M10 18h4"/></svg>Make Shorts</button>
+      <button class="chip" data-prompt="Add an animated title at the start and a lower third with my name and channel."><svg viewBox="0 0 24 24"><path d="M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 11.8L19 13M15 9h0M17.8 6.2L19 5M3 21l9-9M12.2 6.2L11 5"/></svg>Motion graphics</button>
+      <button class="chip" data-prompt="Put my car in outer space and make it glossy red. Keep the camera move the same."><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.8L20 10l-5 3.6L16.8 20 12 16.3 7.2 20 9 13.6 4 10l6.1-1.2z"/></svg>AI scene edit</button>
+      <button class="chip" data-prompt="Add bold captions to the whole video, yellow highlight on the active word."><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15h4M13 15h4M7 11h10"/></svg>Captions</button>
+      <button class="chip" data-prompt="Make a 30-second highlight reel of the best moments with smooth transitions."><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 9h16M9 4v16"/></svg>Highlight reel</button>
+      <button class="chip" data-prompt="This is a podcast episode. Find the 5 most quotable moments and make vertical clips."><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0014 0M12 17v5"/></svg>Podcast clips</button>
+      <button class="chip" data-prompt="Punch in on the key lines and add a smooth zoom whenever I make a point."><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>Punch-in zooms</button>
+    </div>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Rough cuts</span><span>Shorts</span><span>Karaoke captions</span><span>Lower thirds</span><span>Punch-in zooms</span><span>Smooth transitions</span><span>Background swaps</span><span>Highlight reels</span><span>Podcast clips</span>
+    <span>Rough cuts</span><span>Shorts</span><span>Karaoke captions</span><span>Lower thirds</span><span>Punch-in zooms</span><span>Smooth transitions</span><span>Background swaps</span><span>Highlight reels</span><span>Podcast clips</span>
+  </div>
+</div>
+
+<section id="how" style="padding-bottom:0">
+  <div class="wrap">
+    <div class="section-head center">
+      <span class="eyebrow">How it works</span>
+      <h2 data-split>Raw recording to <span class="grad">posted</span> in three steps.</h2>
+    </div>
+    <div class="how" data-stagger="pop">
+      <div class="how-card widget-host">
+        <span class="num">1</span>
+        <h3>Upload once</h3>
+        <p>Drop in your recording. Cutline transcribes every word with timing.</p>
+        <div class="widget w-upload" aria-hidden="true">
+          <div class="file"><span class="thumb"></span><div class="meta"><b>episode-12.mp4</b>18:24 · 1080p<div class="bar"><i></i></div></div><span class="done"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span></div>
+          <div class="words"><span style="--i:0">nobody</span><span style="--i:1">tells</span><span style="--i:2">you</span><span style="--i:3">this</span><span style="--i:4">um</span><span style="--i:5">about</span><span style="--i:6">cameras</span></div>
+        </div>
+      </div>
+      <div class="how-card widget-host">
+        <span class="num">2</span>
+        <h3>Get the first cut</h3>
+        <p>Silences, ums and false starts disappear. The best moments become Shorts.</p>
+        <div class="widget w-wave" aria-hidden="true">
+          <span class="tag-cut">− silences</span>
+          <div class="wave"><i style="--h:66%"></i><i style="--h:44%"></i><i style="--h:75%"></i><i style="--h:31%"></i><i style="--h:34%"></i><i class="gap" style="--h:14%;--k:0"></i><i class="gap" style="--h:7%;--k:1"></i><i style="--h:71%"></i><i style="--h:99%"></i><i style="--h:32%"></i><i style="--h:89%"></i><i style="--h:52%"></i><i style="--h:29%"></i><i class="gap" style="--h:7%;--k:2"></i><i class="gap" style="--h:12%;--k:3"></i><i class="gap" style="--h:12%;--k:4"></i><i style="--h:33%"></i><i style="--h:55%"></i><i style="--h:36%"></i><i style="--h:95%"></i><i class="gap" style="--h:12%;--k:5"></i><i class="gap" style="--h:6%;--k:6"></i><i style="--h:97%"></i><i style="--h:40%"></i><i style="--h:53%"></i><i style="--h:99%"></i><i style="--h:32%"></i><i style="--h:98%"></i><i class="gap" style="--h:12%;--k:7"></i><i class="gap" style="--h:6%;--k:8"></i><i style="--h:53%"></i><i style="--h:30%"></i><i style="--h:96%"></i><i style="--h:42%"></i></div>
+          <div class="labels"><span>Length</span><b data-len data-from="18:24" data-to="12:40">18:24</b></div>
+        </div>
+      </div>
+      <div class="how-card widget-host">
+        <span class="num">3</span>
+        <h3>Ask for changes</h3>
+        <p>Say what you want in plain English. Every edit can be undone.</p>
+        <div class="widget w-chat" aria-hidden="true">
+          <div class="b me b1">Cut the tangent about my cat</div>
+          <div class="typing"><i></i><i></i><i></i></div>
+          <div class="b ai b2">Done. Removed 0:42 at 6:10. Want a Short from the camera test?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-bottom:0">
+  <div class="wrap">
+    <div class="stats-band" data-reveal="mask">
+      <div class="stat-cell"><b data-count="1">1</b><span>upload for your long video and every Short</span></div>
+      <div class="stat-cell"><b><span data-count="1080">1,080</span>×<span data-count="1920">1,920</span></b><span>vertical Shorts, captions burned in</span></div>
+      <div class="stat-cell"><b data-count="9">9</b><span>transition styles for reels and recaps</span></div>
+      <div class="stat-cell"><b>0</b><span>timelines to learn</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="row-head">
+      <div class="section-head">
+        <span class="eyebrow">Studio</span>
+        <h2 data-split>Made with one <span class="grad">prompt.</span></h2>
+        <p>Every one of these started as a raw recording and a sentence.</p>
+      </div>
+      <a class="btn" href="/studio" data-reveal="right">Explore the Studio <svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
+    </div>
+    <div class="teaser-grid" data-stagger="mask">
+      <a class="tile" href="/studio">
+        <video data-auto muted loop playsinline poster="/static/media/motion.jpg" src="/static/media/motion.mp4"></video>
+        <span class="tile-prompt">Add a title that says "Where strategy happens" and a lower third for Episode 12</span>
+        <div class="tile-body"><div><div class="tile-title">Motion graphics</div><div class="tile-desc">Titles, lower thirds and transitions</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
+      </a>
+      <a class="tile" href="/studio">
+        <video data-auto muted loop playsinline poster="/static/media/short.jpg" src="/static/media/short.mp4" style="object-position:center 30%"></video>
+        <span class="tile-prompt">Make Shorts with karaoke captions</span>
+        <div class="tile-body"><div><div class="tile-title">Shorts</div><div class="tile-desc">9:16 with captions</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
+      </a>
+      <a class="tile" href="/studio">
+        <div class="art space"></div>
+        <span class="tile-prompt">Put my car in space, make it red</span>
+        <div class="tile-body"><div><div class="tile-title">AI scene edits <span class="badge blue">Beta</span></div><div class="tile-desc">Change what's in the shot</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
+      </a>
+      <a class="tile" href="/studio">
+        <video data-auto muted loop playsinline poster="/static/media/zoom.jpg" src="/static/media/zoom.mp4"></video>
+        <span class="tile-prompt">Punch in when I make the point</span>
+        <div class="tile-body"><div><div class="tile-title">Punch-in zooms</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
+      </a>
+      <a class="tile" href="/studio">
+        <video data-auto muted loop playsinline poster="/static/media/explainer.jpg" src="/static/media/explainer.mp4"></video>
+        <span class="tile-prompt">Turn my slides into animated cards</span>
+        <div class="tile-body"><div><div class="tile-title">Explainers</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap formats">
+    <div class="formats-visual" aria-hidden="true">
+      <div class="frame wide" data-reveal="left"><video data-auto muted loop playsinline poster="/static/media/raw.jpg" src="/static/media/raw.mp4"></video><span class="frame-label">Long cut · 16:9</span></div>
+      <div class="frame tall" data-reveal="pop" style="--i:3;--r:12deg"><video data-auto muted loop playsinline poster="/static/media/short.jpg" src="/static/media/short.mp4"></video><span class="frame-label">Short · 9:16</span></div>
+      <div class="timeline-strip" data-stagger="pop"><span style="--w:3"></span><span class="cut" style="--w:1"></span><span class="short" style="--w:4"></span><span class="cut" style="--w:.6"></span><span style="--w:5"></span><span class="cut" style="--w:2"></span><span class="short" style="--w:3"></span><span style="--w:4"></span></div>
+    </div>
+    <div>
+      <span class="eyebrow">One upload, every format</span>
+      <h2 data-split style="font-size:clamp(34px,4.6vw,56px)">Your long video and your Shorts come from <span class="grad">one edit.</span></h2>
+      <ul class="checks" data-stagger="right">
+        <li><b>Cut once, use everywhere.</b> Drop the sponsor read and it's gone from the Shorts too.</li>
+        <li><b>Silence removed inside Shorts,</b> so they feel fast without trimming each one.</li>
+        <li><b>Non-destructive.</b> Your original file is never touched. Undo anything, any time.</li>
+        <li><b>Ready to post.</b> MP4s for YouTube, Shorts, TikTok and Reels.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="features" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head center">
+      <span class="eyebrow">Features</span>
+      <h2 data-split>Everything between <span class="grad">record</span> and <span class="grad">publish.</span></h2>
+    </div>
+    <div class="bento" data-stagger="pop">
+      <div class="card wide">
+        <div class="ico"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></svg></div>
+        <h3>Rough cut on autopilot</h3>
+        <p>Dead air, ums and false starts come out automatically, with natural breathing room left in so it never sounds robotic.</p>
+        <div class="prompt">leave a bit more pause between sentences</div>
+      </div>
+      <div class="card wide">
+        <div class="ico"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M10 18h4"/></svg></div>
+        <h3>Long video to Shorts</h3>
+        <p>Cutline reads your transcript and picks moments that open on a hook and land a payoff, then reframes them to 9:16.</p>
+        <div class="prompt">give me 5 Shorts about the main tip</div>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15h4M13 15h4M7 11h10"/></svg></div>
+        <h3>Captions that pop</h3>
+        <p>Bold, clean or karaoke with the active word highlighted. Your colors, your words per line.</p>
+      </div>
+      <div class="card">
+        <span class="badge">Beta</span>
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div>
+        <h3>Motion graphics</h3>
+        <p>Animated titles, lower thirds, punch-in zooms and smooth transitions, placed by describing them.</p>
+      </div>
+      <div class="card">
+        <span class="badge">Beta</span>
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.8L20 10l-5 3.6L16.8 20 12 16.3 7.2 20 9 13.6 4 10l6.1-1.2z"/></svg></div>
+        <h3>AI scene edits</h3>
+        <p>Swap the background, recolor a product, or put your car in space. The motion stays intact.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="pricing" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head center">
+      <span class="eyebrow">Pricing</span>
+      <h2 data-split>Pick your plan</h2>
+      <p>Start free. Upgrade when your channel does.</p>
+    </div>
+    <div class="billing" id="billing" role="group" aria-label="Billing period">
+      <button data-b="monthly">Monthly</button>
+      <button data-b="annual" class="on">Annual <span class="save-pill">Up to 46% off</span></button>
+    </div>
+    <div class="plans annual" id="plans" data-stagger="up">
+      <div class="plan">
+        
+        <div class="plan-top"><h3>Free</h3></div>
+        <p class="plan-tag">Try it on one video</p>
+        <div class="plan-price"><span class="price-now">$0</span><span class="price-per">forever</span></div>
+        <a class="btn  plan-cta" href="/app">Start free</a>
+        <div class="plan-credits"><b>30</b> min of video / mo</div>
+        <ul class="plan-feats"><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Rough cuts: silences, ums, false starts</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>3 Shorts per video</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Bold and clean captions</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>720p exports with a small watermark</li></ul>
+        <div class="plan-ai"><span>AI generation</span><b>AI generation not included</b></div>
+      </div>
+      <div class="plan">
+        
+        <div class="plan-top"><h3>Creator</h3><span class="save-pill" data-annual>Save 40%</span></div>
+        <p class="plan-tag">For weekly uploads</p>
+        <div class="plan-price"><span class="price-was" data-annual>$15</span><span class="price-now" data-m="15" data-a="9">$9</span><span class="price-per">/ month<span data-annual>, billed yearly</span></span></div>
+        <a class="btn  plan-cta" href="#waitlist">Get Creator</a>
+        <div class="plan-credits"><b>300</b> min of video / mo</div>
+        <ul class="plan-feats"><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Everything in Free, no watermark</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Unlimited Shorts per video</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Karaoke captions and lower thirds</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Chat editing in plain words</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>1080p exports</li></ul>
+        <div class="plan-ai"><span>AI generation</span><b>100 AI credits / mo</b><span class="soon-tag">Soon</span></div>
+      </div>
+      <div class="plan popular">
+        <div class="plan-ribbon">Most popular</div>
+        <div class="plan-top"><h3>Pro</h3><span class="save-pill" data-annual>Save 46%</span></div>
+        <p class="plan-tag">For full-time creators</p>
+        <div class="plan-price"><span class="price-was" data-annual>$35</span><span class="price-now" data-m="35" data-a="19">$19</span><span class="price-per">/ month<span data-annual>, billed yearly</span></span></div>
+        <a class="btn primary plan-cta" href="#waitlist">Get Pro</a>
+        <div class="plan-credits"><b>1,200</b> min of video / mo</div>
+        <ul class="plan-feats"><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Everything in Creator</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Content Center templates</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Motion graphics and punch-in zooms</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Claude connector (MCP)</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>4K exports, priority renders</li></ul>
+        <div class="plan-ai"><span>AI generation</span><b>600 AI credits / mo</b><span class="soon-tag">Soon</span></div>
+      </div>
+      <div class="plan">
+        
+        <div class="plan-top"><h3>Studio</h3><span class="save-pill" data-annual>Save 38%</span></div>
+        <p class="plan-tag">For channels with editors</p>
+        <div class="plan-price"><span class="price-was" data-annual>$79</span><span class="price-now" data-m="79" data-a="49">$49</span><span class="price-per">/ month<span data-annual>, billed yearly</span></span></div>
+        <a class="btn  plan-cta" href="#waitlist">Get Studio</a>
+        <div class="plan-credits"><b>Unlimited</b> video minutes</div>
+        <ul class="plan-feats"><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Everything in Pro</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>3 editor seats</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Brand kit: fonts, colors, intros</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>AI scene edits and background swaps</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Up to 5 renders at once</li></ul>
+        <div class="plan-ai"><span>AI generation</span><b>2,000 AI credits / mo</b><span class="soon-tag">Soon</span></div>
+      </div>
+    </div>
+    <div class="biz" data-reveal="up">
+      <div class="biz-card">
+        <div><h3>Team</h3><p>Shared workspace, shared credit pool, and admin controls for 2 to 10 editors.</p></div>
+        <div class="biz-price"><span class="price-now">$29</span><span class="price-per">/ seat / month</span></div>
+        <a class="btn" href="#waitlist">Talk to us</a>
+      </div>
+      <div class="biz-card">
+        <div><h3>Enterprise</h3><p>Networks and agencies: SSO, custom volume, a priority queue and a dedicated contact.</p></div>
+        <div class="biz-price"><span class="price-now">Custom</span></div>
+        <a class="btn" href="#waitlist">Contact sales</a>
+      </div>
+    </div>
+    <p class="pricing-note">Cutline is free while in beta. Paid plans and AI generation credits start when the beta ends; prices may change before then.</p>
+  </div>
+</section>
+
+<section id="claude" style="padding-top:0">
+  <div class="wrap">
+    <div class="claude-band" data-reveal="mask">
+      <div style="position:relative">
+        <span class="eyebrow">Claude &amp; MCP</span>
+        <h2>Already use Claude? Edit right there.</h2>
+        <p>Cutline ships as a Claude connector. Add it once and edit your videos in the same chat where you write your scripts and titles.</p>
+        <a class="btn white" href="https://github.com/bowmanjace616-eng/cutline#mcp-tools">Set up the connector</a>
+      </div>
+      <div class="chat-demo" aria-hidden="true" data-stagger="pop">
+        <div class="bubble me">Clean up episode12.mp4, cut the sponsor read, and give me 3 Shorts with karaoke captions.</div>
+        <div class="bubble tool">Cut 41 silences and 23 filler words</div>
+        <div class="bubble tool">Removed 1:12 to 2:04</div>
+        <div class="bubble tool">Rendered 3 Shorts, 1080×1920</div>
+        <div class="bubble ai">Done. Your 18-minute recording is now 12:40, and the Shorts open on your three strongest hooks.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="waitlist" style="padding-top:0">
+  <div class="wrap">
+    <div class="cta-band" data-reveal="pop" style="--r:0deg">
+      <h2 data-split>Get early access.</h2>
+      <p>Cutline is free during the beta. Join and help decide what we build next.</p>
+      <form class="waitlist" id="waitlist-form">
+        <input type="email" name="email" placeholder="you@email.com" required aria-label="Email">
+        <input type="text" name="channel" placeholder="Your channel (optional)" aria-label="Channel">
+        <button class="btn white" type="submit">Join the beta</button>
+      </form>
+      <div class="form-msg" id="waitlist-msg" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head center"><h2 data-split>Questions</h2></div>
+    <div class="faq" data-stagger="up">
+      <details><summary>What kind of videos does it work best on?</summary><p>Anything where someone is talking: talking-head YouTube videos, tutorials, podcasts, vlogs, reviews. Cutline uses the transcript to decide what to cut and which moments make good Shorts.</p></details>
+      <details><summary>Will it ruin my original footage?</summary><p>No. Every edit is a list of instructions over your original file. Nothing is re-encoded until you render, and you can undo any change.</p></details>
+      <details><summary>How long does it take?</summary><p>A 10-minute video usually takes a few minutes for the first cut and Shorts. AI scene edits take a few minutes per clip because the new footage is generated.</p></details>
+      <details><summary>How much does it cost?</summary><p>Free during the beta. After that there is a free plan plus paid plans (see <a href="#pricing">Pricing</a>). AI generation, like scene edits and faceless videos, uses credits included in paid plans.</p></details>
+      <details><summary>Do I need Claude to use it?</summary><p>No. The web app works on its own. If you already use Claude, you can also add Cutline as a connector and edit from your chat.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <a class="logo" href="/" style="font-size:19px"><span class="logo-mark" style="width:22px;height:22px"></span>Cutline</a>
+    <nav><a href="/content">Content Center</a><a href="/studio">Studio</a><a href="#pricing">Pricing</a><a href="/app" data-app-link>Editor</a><a href="https://github.com/bowmanjace616-eng/cutline">GitHub</a><span>© <span data-year></span> Cutline</span></nav>
+  </div>
+</footer>
+
+<script src="/static/common.js"></script>
+<script src="/static/motion.js"></script>
+<script>
+  const C = Cutline;
+  C.autoplay();
+  C.waitlist(document.getElementById("waitlist-form"), document.getElementById("waitlist-msg"));
+  const box = C.composer(document.getElementById("hero-composer"), {
+    async onSubmit({ file, prompt, progress, say }) {
+      if (!file) {  // no video yet: carry the prompt into the editor
+        location.href = C.API + "/app" + (prompt ? "?prompt=" + encodeURIComponent(prompt) : "");
+        return;
+      }
+      say("Uploading…");
+      const s = await C.startProject(file, prompt, { shorts: 3, captions: "bold" }, progress);
+      location.href = C.API + "/app?p=" + s.project_id + (prompt && !s.chat_enabled ? "&prompt=" + encodeURIComponent(prompt) : "");
+    },
+  });
+  document.querySelectorAll("#billing button").forEach(b => b.onclick = () => {
+    document.querySelectorAll("#billing button").forEach(x => x.classList.toggle("on", x === b));
+    const annual = b.dataset.b === "annual";
+    document.getElementById("plans").classList.toggle("annual", annual);
+    document.querySelectorAll("#plans [data-m]").forEach(p => p.textContent = "$" + (annual ? p.dataset.a : p.dataset.m));
+  });
+  document.querySelectorAll("#hero-chips .chip").forEach(c => c.onclick = () => box.setPrompt(c.dataset.prompt));
+</script>
+</body>
+</html>

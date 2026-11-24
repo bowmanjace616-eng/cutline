@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Content Center · Cutline</title>
+  <meta name="description" content="Pick a viral template, fill in the blank, and let Cutline make the video. Edit your own footage today; AI generation from scratch is coming soon.">
+  <meta name="cutline-api" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/motion.css">
+  <link rel="stylesheet" href="/static/content.css">
+  <script>document.documentElement.classList.add("js")</script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232e5a8c'/%3E%3Cpath d='M14 -2 L20 34' stroke='white' stroke-width='5'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="logo-mark"></span>Cutline</a>
+    <div class="nav-links">
+      <a href="/content" class="on">Content Center</a>
+      <a href="/studio">Studio</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn sm primary" href="/app" data-app-link>Try Cutline</a>
+    </div>
+  </div>
+</nav>
+
+<header class="studio-hero cc-hero">
+  <div class="cc-orbs" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="wrap">
+    <span class="eyebrow">Content Center</span>
+    <h1 data-split>Viral videos, <span class="grad">one blank away.</span></h1>
+    <p>Pick a trending format, fill in the blank, and Cutline makes the video. Bring your own footage today. Faceless videos generated from scratch are coming soon.</p>
+
+    <div class="cc-mode" id="cc-mode" role="tablist" aria-label="What to make">
+      <button class="on" data-mode="edit" role="tab">Edit my footage</button>
+      <button data-mode="generate" role="tab">Generate from scratch <span class="soon-pill">Soon</span></button>
+    </div>
+
+    <div class="composer-card" id="cc-composer">
+      <textarea rows="3" placeholder="Attach your video and describe the Short. Or pick a template below."></textarea>
+      <div class="composer-row">
+        <div class="composer-left">
+          <button class="icon-btn" type="button" data-attach title="Add a video" aria-label="Add a video"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+          <input type="file" accept="video/*,.mp4,.mov,.m4v,.mkv,.webm" hidden>
+          <label class="mini-select"><select id="cc-length" aria-label="Length"><option>15 sec</option><option selected>30 sec</option><option>60 sec</option></select></label>
+          <label class="mini-select"><select id="cc-format" aria-label="Format"><option selected>9:16</option><option>1:1</option><option>16:9</option></select></label>
+          <label class="mini-select"><select id="cc-count" aria-label="Versions"><option value="1" selected>1 version</option><option value="3">3 versions</option><option value="5">5 versions</option></select></label>
+          <span data-file></span>
+        </div>
+        <button class="send-btn" type="button" aria-label="Make it"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+      </div>
+      <div class="upbar" hidden><i></i></div>
+      <div class="composer-msg" role="status"></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap cc-main">
+  <div class="cc-head">
+    <div>
+      <h2 data-split>Pick a trending format</h2>
+      <p>Click one to load it into the box above, then swap the highlighted blank for your own idea.</p>
+    </div>
+    <div class="filters" id="cc-filters">
+      <button class="filter on" data-f="all">All</button>
+      <button class="filter" data-f="footage">Works today</button>
+      <button class="filter" data-f="whatif">What if</button>
+      <button class="filter" data-f="pov">POV</button>
+      <button class="filter" data-f="facts">Facts</button>
+      <button class="filter" data-f="rank">Rankings</button>
+      <button class="filter" data-f="story">Storytime</button>
+      <button class="filter" data-f="clips">Clips</button>
+    </div>
+  </div>
+  <div class="tpl-grid" id="templates"></div>
+  <p class="studio-note">Template previews are illustrations. Templates marked “AI · Soon” generate new footage, which arrives with paid plans.</p>
+</main>
+
+<section class="cc-steps-wrap">
+  <div class="wrap">
+    <div class="cc-steps" data-stagger="up">
+      <div class="cc-step"><b>1</b><h3>Pick a format</h3><p>Start from a template that's already working on Shorts, Reels and TikTok.</p></div>
+      <div class="cc-step"><b>2</b><h3>Fill the blank</h3><p>Type your topic, then choose length, aspect ratio and how many versions you want.</p></div>
+      <div class="cc-step"><b>3</b><h3>Post it</h3><p>Cutline cuts, captions and exports. Ask for changes in plain words until it's right.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="waitlist" style="padding-top:0">
+  <div class="wrap">
+    <div class="cta-band" data-reveal="pop" style="--r:0deg">
+      <h2 data-split>Generation is coming.</h2>
+      <p>Faceless "What if" and POV videos made from scratch are next. Join the list to try them first.</p>
+      <form class="waitlist" id="cc-waitlist-form">
+        <input type="email" name="email" placeholder="you@email.com" required aria-label="Email">
+        <input type="hidden" name="channel" value="content-center">
+        <button class="btn white" type="submit">Notify me</button>
+      </form>
+      <div class="form-msg" id="cc-waitlist-msg" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <a class="logo" href="/" style="font-size:19px"><span class="logo-mark" style="width:22px;height:22px"></span>Cutline</a>
+    <nav><a href="/content">Content Center</a><a href="/studio">Studio</a><a href="/#pricing">Pricing</a><a href="/app" data-app-link>Editor</a><span>© <span data-year></span> Cutline</span></nav>
+  </div>
+</footer>
+
+<script src="/static/common.js"></script>
+<script src="/static/content.js"></script>
+<script src="/static/motion.js"></script>
+</body>
+</html>
