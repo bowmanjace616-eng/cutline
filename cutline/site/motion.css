@@ -61,7 +61,7 @@
 
 /* 1: upload */
 .w-upload .file { display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
-.w-upload .thumb { width: 54px; height: 34px; border-radius: 6px; background: url(/static/media/raw.jpg) center/cover; flex: none; }
+.w-upload .thumb { width: 54px; height: 34px; border-radius: 6px; background: linear-gradient(135deg, var(--blue-deep), var(--blue-bright)); flex: none; }
 .w-upload .meta { flex: 1; min-width: 0; font-size: 13px; }
 .w-upload .meta b { display: block; font-size: 13.5px; }
 .w-upload .bar { height: 6px; border-radius: 3px; background: var(--surface-2); margin-top: 7px; overflow: hidden; }

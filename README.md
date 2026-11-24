@@ -53,7 +53,7 @@ docker build -t cutline . && docker run -p 8080:8080 -v cutline-data:/data cutli
 ```
 
 Code: `cutline/web.py` (Starlette API + background jobs), `cutline/agent.py` (Claude tool loop),
-`cutline/site/` (plain HTML/CSS/JS, no build step; showcase clips in `site/media/`). The landing page is a single static file, so it can
+`cutline/site/` (plain HTML/CSS/JS, no build step; no sample footage, every edit runs on the creator's own upload). The landing page is a single static file, so it can
 also go on GitHub Pages; set `<meta name="cutline-api">` in `site/index.html` to the app's URL.
 
 Not built yet: accounts and sign-in, per-user storage limits, billing, and a real job queue (jobs run in

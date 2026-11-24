@@ -7,7 +7,6 @@
   <meta name="description" content="Upload one video. Cutline gives you a tight long-form cut, captioned Shorts, motion graphics and AI scene edits. Just tell it what you want.">
   <meta property="og:title" content="Cutline · The AI video editor for creators">
   <meta property="og:description" content="One upload. A clean long cut, ready-to-post Shorts, motion graphics and AI scene edits, all by chatting.">
-  <meta property="og:image" content="/static/media/motion.jpg">
   <meta name="cutline-api" content="">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +18,7 @@
 </head>
 <body>
 
-<a class="announce" href="/studio"><b>New</b> AI scene edits: put your car in space, swap your background, recolor anything <span>→</span></a>
+<a class="announce" href="/studio"><b>New</b> Motion graphics: animated titles, lower thirds and punch-in zooms, just by asking <span>→</span></a>
 
 <nav class="nav">
   <div class="wrap">
@@ -37,10 +36,10 @@
 
 <header class="hero">
   <div class="floaters" aria-hidden="true">
-    <div class="floater f1"><video data-auto muted loop playsinline poster="/static/media/short.jpg" src="/static/media/short.mp4"></video><span class="chip-label">Short · captions</span></div>
-    <div class="floater f2"><video data-auto muted loop playsinline poster="/static/media/explainer.jpg" src="/static/media/explainer.mp4"></video><span class="chip-label">Explainer</span></div>
-    <div class="floater f3"><video data-auto muted loop playsinline poster="/static/media/motion.jpg" src="/static/media/motion.mp4"></video><span class="chip-label">Motion graphics</span></div>
-    <div class="floater f4"><div class="art space" style="position:absolute;inset:0"></div><span class="chip-label">AI scene edit</span></div>
+    <div class="floater f1"><div class="art captions"><span class="wave"></span><span class="cap">Your words, <b>captioned</b></span></div><span class="chip-label">Short · captions</span></div>
+    <div class="floater f2"><div class="art cards"><span class="c">Step 1</span><span class="c">Step 2</span><span class="c">Step 3</span></div><span class="chip-label">Explainer</span></div>
+    <div class="floater f3"><div class="art titles"><span class="t1">Episode 12</span><span class="t2"></span><span class="lt">Your channel<small>Lower third</small></span></div><span class="chip-label">Motion graphics</span></div>
+    <div class="floater f4"><div class="art zoom"><span class="box"></span></div><span class="chip-label">Punch-in zoom</span></div>
   </div>
 
   <div class="wrap">
@@ -65,7 +64,6 @@
       <button class="chip" data-prompt="Clean up my footage: cut the silences, ums and false starts, but keep it natural."><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></svg>Clean up footage</button>
       <button class="chip" data-prompt="Turn this into 4 Shorts. Pick moments that open on a hook, and use karaoke captions."><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M10 18h4"/></svg>Make Shorts</button>
       <button class="chip" data-prompt="Add an animated title at the start and a lower third with my name and channel."><svg viewBox="0 0 24 24"><path d="M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 11.8L19 13M15 9h0M17.8 6.2L19 5M3 21l9-9M12.2 6.2L11 5"/></svg>Motion graphics</button>
-      <button class="chip" data-prompt="Put my car in outer space and make it glossy red. Keep the camera move the same."><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.8L20 10l-5 3.6L16.8 20 12 16.3 7.2 20 9 13.6 4 10l6.1-1.2z"/></svg>AI scene edit</button>
       <button class="chip" data-prompt="Add bold captions to the whole video, yellow highlight on the active word."><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15h4M13 15h4M7 11h10"/></svg>Captions</button>
       <button class="chip" data-prompt="Make a 30-second highlight reel of the best moments with smooth transitions."><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 9h16M9 4v16"/></svg>Highlight reel</button>
       <button class="chip" data-prompt="This is a podcast episode. Find the 5 most quotable moments and make vertical clips."><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0014 0M12 17v5"/></svg>Podcast clips</button>
@@ -138,33 +136,28 @@
       <div class="section-head">
         <span class="eyebrow">Studio</span>
         <h2 data-split>Made with one <span class="grad">prompt.</span></h2>
-        <p>Every one of these started as a raw recording and a sentence.</p>
+        <p>Each of these is one sentence to the editor, applied to the video you upload.</p>
       </div>
       <a class="btn" href="/studio" data-reveal="right">Explore the Studio <svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
     </div>
     <div class="teaser-grid" data-stagger="mask">
       <a class="tile" href="/studio">
-        <video data-auto muted loop playsinline poster="/static/media/motion.jpg" src="/static/media/motion.mp4"></video>
-        <span class="tile-prompt">Add a title that says "Where strategy happens" and a lower third for Episode 12</span>
+        <div class="art titles"><span class="t1">Your title</span><span class="t2"></span><span class="lt">Your name<small>Your channel</small></span></div>
+        <span class="tile-prompt">Add an animated title and a lower third with my name and channel</span>
         <div class="tile-body"><div><div class="tile-title">Motion graphics</div><div class="tile-desc">Titles, lower thirds and transitions</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
       </a>
       <a class="tile" href="/studio">
-        <video data-auto muted loop playsinline poster="/static/media/short.jpg" src="/static/media/short.mp4" style="object-position:center 30%"></video>
+        <div class="art captions"><span class="wave"></span><span class="cap">Karaoke <b>captions</b></span></div>
         <span class="tile-prompt">Make Shorts with karaoke captions</span>
         <div class="tile-body"><div><div class="tile-title">Shorts</div><div class="tile-desc">9:16 with captions</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
       </a>
       <a class="tile" href="/studio">
-        <div class="art space"></div>
-        <span class="tile-prompt">Put my car in space, make it red</span>
-        <div class="tile-body"><div><div class="tile-title">AI scene edits <span class="badge blue">Beta</span></div><div class="tile-desc">Change what's in the shot</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
-      </a>
-      <a class="tile" href="/studio">
-        <video data-auto muted loop playsinline poster="/static/media/zoom.jpg" src="/static/media/zoom.mp4"></video>
+        <div class="art zoom"><span class="box"></span></div>
         <span class="tile-prompt">Punch in when I make the point</span>
         <div class="tile-body"><div><div class="tile-title">Punch-in zooms</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
       </a>
       <a class="tile" href="/studio">
-        <video data-auto muted loop playsinline poster="/static/media/explainer.jpg" src="/static/media/explainer.mp4"></video>
+        <div class="art cards"><span class="c">Step 1</span><span class="c">Step 2</span><span class="c">Step 3</span></div>
         <span class="tile-prompt">Turn my slides into animated cards</span>
         <div class="tile-body"><div><div class="tile-title">Explainers</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
       </a>
@@ -175,8 +168,8 @@
 <section style="padding-top:0">
   <div class="wrap formats">
     <div class="formats-visual" aria-hidden="true">
-      <div class="frame wide" data-reveal="left"><video data-auto muted loop playsinline poster="/static/media/raw.jpg" src="/static/media/raw.mp4"></video><span class="frame-label">Long cut · 16:9</span></div>
-      <div class="frame tall" data-reveal="pop" style="--i:3;--r:12deg"><video data-auto muted loop playsinline poster="/static/media/short.jpg" src="/static/media/short.mp4"></video><span class="frame-label">Short · 9:16</span></div>
+      <div class="frame wide" data-reveal="left"><div class="art cut"><span class="track a"><i style="--w:3"></i><i class="x" style="--w:1"></i><i style="--w:4"></i><i class="x" style="--w:.7"></i><i style="--w:3"></i></span><span class="track b"><i style="--w:2"></i><i class="x" style="--w:1.4"></i><i style="--w:5"></i><i class="x" style="--w:.8"></i><i style="--w:2"></i></span><span class="head"></span></div><span class="frame-label">Long cut · 16:9</span></div>
+      <div class="frame tall" data-reveal="pop" style="--i:3;--r:12deg"><div class="art captions"><span class="wave"></span><span class="cap">One edit, <b>every format</b></span></div><span class="frame-label">Short · 9:16</span></div>
       <div class="timeline-strip" data-stagger="pop"><span style="--w:3"></span><span class="cut" style="--w:1"></span><span class="short" style="--w:4"></span><span class="cut" style="--w:.6"></span><span style="--w:5"></span><span class="cut" style="--w:2"></span><span class="short" style="--w:3"></span><span style="--w:4"></span></div>
     </div>
     <div>
@@ -226,7 +219,7 @@
         <span class="badge">Beta</span>
         <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.8L20 10l-5 3.6L16.8 20 12 16.3 7.2 20 9 13.6 4 10l6.1-1.2z"/></svg></div>
         <h3>AI scene edits</h3>
-        <p>Swap the background, recolor a product, or put your car in space. The motion stays intact.</p>
+        <p>Swap the background or recolor a product in your own footage. The motion stays intact.</p>
       </div>
     </div>
   </div>

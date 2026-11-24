@@ -2,7 +2,8 @@
 (() => {
   const C = Cutline, $ = C.$;
 
-  // kind "ai": needs AI video generation (coming soon). kind "footage": runs today on the creator's own video.
+  // kind "ai": needs AI video generation (coming soon). kind "footage": runs today on the creator's own uploaded video.
+  // Thumbnails are CSS illustrations; there is no sample footage on the site.
   const T = [
     { cat: "whatif", kind: "ai", scene: "jungle", hook: "What if you went missing in", blank: "the Amazon", prompt: "What if you went missing in ___? Make a 30-second faceless story: day-by-day survival beats, eerie narration, and bold captions." },
     { cat: "whatif", kind: "ai", scene: "sepia", hook: "What if you woke up in", blank: "1925", prompt: "What if you woke up in ___? Walk through the first 24 hours in a 30-second faceless story with period-accurate scenes and narration." },
@@ -13,11 +14,11 @@
     { cat: "facts", kind: "ai", scene: "lab", hook: "5 facts about", blank: "sleep", tail: "that sound fake", prompt: "5 facts about ___ that sound fake but are true. Number each one on screen, fast cuts, bold captions, 40 seconds." },
     { cat: "facts", kind: "ai", scene: "empire", hook: "The rise and fall of", blank: "Blockbuster", prompt: "The rise and fall of ___ in 60 seconds. Timeline style with dates on screen, archival look, and narration." },
     { cat: "rank", kind: "ai", scene: "neon", hook: "Ranking every", blank: "fast food fry", tail: "worst to best", prompt: "Ranking every ___ from worst to best. Tier-list visuals, quick verdicts, 45 seconds, captions on." },
-    { cat: "story", kind: "footage", video: "raw", pos: "center", hook: "Storytime:", blank: "the worst job I ever had", prompt: "Storytime: ___. Turn my recording into a tight vertical story. Cut the dead air, punch in on the big moments, karaoke captions." },
-    { cat: "story", kind: "footage", video: "zoom", pos: "center", hook: "Day 1 vs day 100 of", blank: "learning guitar", prompt: "Day 1 vs day 100 of ___. Cut my clips into a before-and-after Short with a split screen at the end and bold captions." },
-    { cat: "clips", kind: "footage", video: "raw", pos: "30% center", hook: "5 hook-first Shorts from", blank: "my podcast", prompt: "Turn ___ into 5 Shorts that each open on a strong hook. Vertical, karaoke captions, blue highlight." },
-    { cat: "clips", kind: "footage", video: "zoom", pos: "70% center", hook: "Hot take:", blank: "college is overrated", prompt: "Hot take: ___. Cut my rant into a 30-second Short, punch in on every strong line, and caption it." },
-    { cat: "clips", kind: "footage", video: "short", pos: "center 20%", hook: "3 things nobody tells you about", blank: "YouTube", prompt: "3 things nobody tells you about ___. Turn my recording into a numbered list Short with animated cards between points." },
+    { cat: "story", kind: "footage", scene: "story", hook: "Storytime:", blank: "the worst job I ever had", prompt: "Storytime: ___. Turn my recording into a tight vertical story. Cut the dead air, punch in on the big moments, karaoke captions." },
+    { cat: "story", kind: "footage", scene: "split", hook: "Day 1 vs day 100 of", blank: "learning guitar", prompt: "Day 1 vs day 100 of ___. Cut my clips into a before-and-after Short with a split screen at the end and bold captions." },
+    { cat: "clips", kind: "footage", scene: "podcast", hook: "5 hook-first Shorts from", blank: "my podcast", prompt: "Turn ___ into 5 Shorts that each open on a strong hook. Vertical, karaoke captions, blue highlight." },
+    { cat: "clips", kind: "footage", scene: "rant", hook: "Hot take:", blank: "college is overrated", prompt: "Hot take: ___. Cut my rant into a 30-second Short, punch in on every strong line, and caption it." },
+    { cat: "clips", kind: "footage", scene: "list", hook: "3 things nobody tells you about", blank: "YouTube", prompt: "3 things nobody tells you about ___. Turn my recording into a numbered list Short with animated cards between points." },
     { cat: "whatif", kind: "ai", scene: "desert", hook: "What if you were trapped in", blank: "the Sahara", prompt: "What if you were trapped in ___ with one bottle of water? 30-second faceless survival story, captions, ticking-clock music." },
     { cat: "pov", kind: "ai", scene: "snow", hook: "POV: your flight crashed in", blank: "Antarctica", prompt: "POV: your flight crashed in ___. First-person survival short, 30 seconds, captions, cold blue grade." },
   ];
@@ -29,13 +30,6 @@
     const card = C.el("article", "tpl");
     card.dataset.cat = t.cat; card.dataset.kind = t.kind;
     const thumb = C.el("div", "tpl-thumb" + (t.scene ? " scene-" + t.scene : ""));
-    if (t.video) {
-      const v = document.createElement("video");
-      Object.assign(v, { muted: true, loop: true, playsInline: true, poster: `/static/media/${t.video}.jpg`, src: `/static/media/${t.video}.mp4` });
-      v.setAttribute("data-auto", ""); v.setAttribute("muted", "");
-      if (t.pos) v.style.objectPosition = t.pos;
-      thumb.append(v);
-    }
     const cap = C.el("div", "tpl-cap");
     cap.append(document.createTextNode(t.hook + " "), C.el("mark", null, t.blank), document.createTextNode(t.tail ? " " + t.tail : t.cat === "whatif" ? "?" : ""));
     thumb.append(cap);

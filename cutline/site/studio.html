@@ -34,7 +34,7 @@
   <div class="wrap">
     <span class="eyebrow">Studio</span>
     <h1 data-split>One video. <span class="grad">Endless cuts.</span></h1>
-    <p>Everything here started as a raw recording and one sentence. Hover a tile to see the prompt, click it to try it on your own footage.</p>
+    <p>Each of these is one sentence to the editor. Hover a tile to see the prompt, click it to try it on your own footage.</p>
     <div class="filters" id="filters">
       <button class="filter on" data-f="all">All</button>
       <button class="filter" data-f="cleanup">Cleanups</button>
@@ -48,62 +48,57 @@
 <main class="wrap">
   <div class="studio-grid" id="grid" data-stagger="mask">
     <a class="tile w4 h3" data-cat="motion" data-prompt="Add an animated title that says &quot;Where strategy happens&quot; and a lower third: Strategy Talk, Episode 12.">
-      <video data-auto muted loop playsinline poster="/static/media/motion.jpg" src="/static/media/motion.mp4"></video>
+      <div class="art titles"><span class="t1">Your title</span><span class="t2"></span><span class="lt">Your show<small>Episode 12</small></span></div>
       <span class="tile-prompt">Add an animated title that says "Where strategy happens" and a lower third: Strategy Talk, Episode 12</span>
       <div class="tile-body"><div><div class="tile-title">Titles &amp; lower thirds <span class="badge">Motion</span></div><div class="tile-desc">Kinetic type, placed by describing it</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
     </a>
     <a class="tile h3 tall-m" data-cat="shorts" data-prompt="Make 3 Shorts with karaoke captions, blue highlight on the active word.">
-      <video data-auto muted loop playsinline poster="/static/media/short.jpg" src="/static/media/short.mp4"></video>
+      <div class="art captions"><span class="wave"></span><span class="cap">Blue <b>highlight</b></span></div>
       <span class="tile-prompt">Make 3 Shorts with karaoke captions, blue highlight</span>
       <div class="tile-body"><div><div class="tile-title">Karaoke Shorts</div><div class="tile-desc">9:16, captions burned in</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
     </a>
-    <a class="tile w3" data-cat="scene" data-prompt="Put my car in outer space and make it glossy red. Keep the camera move the same.">
-      <div class="art space"></div>
-      <span class="tile-prompt">Put my car in outer space and make it glossy red</span>
-      <div class="tile-body"><div><div class="tile-title">Car in space <span class="badge blue">Beta</span></div><div class="tile-desc">AI scene edit · illustration</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
-    </a>
     <a class="tile w3" data-cat="motion" data-prompt="Punch in smoothly whenever I make a key point.">
-      <video data-auto muted loop playsinline poster="/static/media/zoom.jpg" src="/static/media/zoom.mp4"></video>
+      <div class="art zoom"><span class="box"></span></div>
       <span class="tile-prompt">Punch in smoothly whenever I make a key point</span>
       <div class="tile-body"><div><div class="tile-title">Punch-in zooms <span class="badge">Motion</span></div><div class="tile-desc">Emphasis without a second camera</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
     </a>
-    <a class="tile" data-cat="scene" data-prompt="Replace my background with a neon city at night. Keep me exactly the same.">
+    <a class="tile w3" data-cat="scene" data-prompt="Replace my background with a neon city at night. Keep me exactly the same.">
       <div class="art neon"></div>
       <span class="tile-prompt">Replace my background with a neon city at night</span>
       <div class="tile-body"><div><div class="tile-title">Background swap <span class="badge blue">Beta</span></div><div class="tile-desc">Illustration</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
     </a>
     <a class="tile w4" data-cat="motion" data-prompt="Turn my talking points into animated cards with smooth transitions between them.">
-      <video data-auto muted loop playsinline poster="/static/media/explainer.jpg" src="/static/media/explainer.mp4"></video>
+      <div class="art cards"><span class="c">Step 1</span><span class="c">Step 2</span><span class="c">Step 3</span></div>
       <span class="tile-prompt">Turn my talking points into animated cards with smooth transitions</span>
       <div class="tile-body"><div><div class="tile-title">Explainer cards <span class="badge">Motion</span></div><div class="tile-desc">Slides that move</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
     </a>
+    <a class="tile" data-cat="shorts" data-prompt="This is a podcast. Find the 5 most quotable moments and make vertical clips with bold captions.">
+      <div class="art captions"><span class="wave"></span><span class="cap">Most <b>quotable</b></span></div>
+      <span class="tile-prompt">Find the 5 most quotable moments and make vertical clips</span>
+      <div class="tile-body"><div><div class="tile-title">Podcast to clips</div><div class="tile-desc">Hooks found for you</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
+    </a>
     <a class="tile w3" data-cat="cleanup" data-prompt="Clean this up: cut the silences, ums and false starts, but leave natural pauses.">
-      <video data-auto muted loop playsinline poster="/static/media/raw.jpg" src="/static/media/raw.mp4"></video>
+      <div class="art cut"><span class="track a"><i style="--w:3"></i><i class="x" style="--w:1"></i><i style="--w:4"></i><i class="x" style="--w:.7"></i><i style="--w:3"></i></span><span class="track b"><i style="--w:2"></i><i class="x" style="--w:1.4"></i><i style="--w:5"></i><i class="x" style="--w:.8"></i><i style="--w:2"></i></span><span class="head"></span></div>
       <span class="tile-prompt">Cut the silences, ums and false starts, but leave natural pauses</span>
       <div class="tile-body"><div><div class="tile-title">Rough cut</div><div class="tile-desc">18 minutes of recording, 12:40 of video</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
     </a>
     <a class="tile w3" data-cat="cleanup" data-prompt="Remove the sponsor read and the tangent about my cat, then tighten the intro.">
-      <video data-auto muted loop playsinline poster="/static/media/raw.jpg" src="/static/media/raw.mp4" style="filter:saturate(1.2) hue-rotate(-8deg)"></video>
+      <div class="art cut" style="filter:hue-rotate(-20deg)"><span class="track a"><i style="--w:3"></i><i class="x" style="--w:1"></i><i style="--w:4"></i><i class="x" style="--w:.7"></i><i style="--w:3"></i></span><span class="track b"><i style="--w:2"></i><i class="x" style="--w:1.4"></i><i style="--w:5"></i><i class="x" style="--w:.8"></i><i style="--w:2"></i></span><span class="head"></span></div>
       <span class="tile-prompt">Remove the sponsor read and the tangent about my cat</span>
       <div class="tile-body"><div><div class="tile-title">Cut by asking</div><div class="tile-desc">No scrubbing the timeline</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
     </a>
-    <a class="tile" data-cat="shorts" data-prompt="This is a podcast. Find the 5 most quotable moments and make vertical clips with bold captions.">
-      <video data-auto muted loop playsinline poster="/static/media/short.jpg" src="/static/media/short.mp4" style="object-position:center 25%"></video>
-      <span class="tile-prompt">Find the 5 most quotable moments and make vertical clips</span>
-      <div class="tile-body"><div><div class="tile-title">Podcast to clips</div><div class="tile-desc">Hooks found for you</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
-    </a>
-    <a class="tile" data-cat="scene" data-prompt="Recolor the product on the desk to match my brand blue.">
+    <a class="tile w3" data-cat="scene" data-prompt="Recolor the product on the desk to match my brand blue.">
       <div class="art recolor"></div>
       <span class="tile-prompt">Recolor the product on the desk to match my brand blue</span>
       <div class="tile-body"><div><div class="tile-title">Recolor anything <span class="badge blue">Beta</span></div><div class="tile-desc">Illustration</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
     </a>
-    <a class="tile" data-cat="motion" data-prompt="Make a 30-second highlight reel of the best moments with smooth whip transitions.">
-      <video data-auto muted loop playsinline poster="/static/media/motion.jpg" src="/static/media/motion.mp4" style="object-position:70% center"></video>
+    <a class="tile w3" data-cat="motion" data-prompt="Make a 30-second highlight reel of the best moments with smooth whip transitions.">
+      <div class="art reel"><span class="strip"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
       <span class="tile-prompt">Make a 30-second highlight reel with smooth transitions</span>
       <div class="tile-body"><div><div class="tile-title">Highlight reel <span class="badge">Motion</span></div><div class="tile-desc">Trailers and recaps</div></div><span class="arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
     </a>
   </div>
-  <p class="studio-note">Tiles marked "illustration" show the idea, not a real render.</p>
+  <p class="studio-note">Tiles are illustrations of each edit. Cutline applies them to the video you upload.</p>
 </main>
 
 <section style="padding-top:0">
