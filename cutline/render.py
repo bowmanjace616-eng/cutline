@@ -21,19 +21,26 @@ def render(
     ass_path: str | None = None,
     has_audio: bool = True,
     preview: bool = False,
+    grade: str | None = None,
+    overlay_ass: str | None = None,
 ) -> str:
-    """Write out_path containing only the keep ranges of source, in order."""
+    """Write out_path containing only the keep ranges of source, in order.
+
+    grade: FFmpeg filters applied to source frames first (source-time `enable` works there).
+    overlay_ass: custom text/motion overlays, burned last so they sit above captions.
+    """
     if not keep:
         raise ValueError("Nothing to render: the keep list is empty")
     sel = _between(keep)
-    v = f"[0:v]select='{sel}',setpts=N/FRAME_RATE/TB"
+    v = "[0:v]" + (f"{grade}," if grade else "") + f"select='{sel}',setpts=N/FRAME_RATE/TB"
     if vertical:
         v += ",crop='min(iw,ih*9/16)':'min(ih,iw*16/9)',scale=1080:1920,setsar=1"
     elif preview:
         v += ",scale=-2:480"
-    if ass_path:
-        esc = ass_path.replace("\\", "/").replace(":", "\\:").replace("'", "\\'")
-        v += f",ass='{esc}'"
+    for path in (ass_path, overlay_ass):
+        if path:
+            esc = path.replace("\\", "/").replace(":", "\\:").replace("'", "\\'")
+            v += f",ass='{esc}'"
     graph = v + "[v]"
     if has_audio:
         graph += f";[0:a]aselect='{sel}',asetpts=N/SR/TB[a]"

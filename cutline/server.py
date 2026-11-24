@@ -9,12 +9,16 @@ this server does the video work. Run locally with stdio, or as a remote connecto
 
 from __future__ import annotations
 
+import subprocess
 import sys
+from typing import Annotated
 
 from mcp.server.mcpserver import MCPServer
+from pydantic import Field
 
+from . import looks, overlays
 from . import project as P
-from .models import CaptionStyle, Range, Short
+from .models import CaptionStyle, Range, Short, TextAnim, TextOverlay
 
 mcp = MCPServer(
     name="cutline",
@@ -22,7 +26,10 @@ mcp = MCPServer(
         "Cutline edits talking-head videos. Typical flow: create_project -> analyze -> review get_transcript "
         "-> remove_ranges for anything the creator wants gone -> pick 3-5 strong, self-contained moments "
         "of 15-60s (start on a hook, end on a payoff) and call add_shorts -> render. All times are seconds "
-        "in the ORIGINAL source video. Edits are non-destructive; nothing is re-encoded until render."
+        "in the ORIGINAL source video. Edits are non-destructive; nothing is re-encoded until render. "
+        "Beyond cuts: set_color_grade changes lighting and color (darker, warmer, cinematic...), add_text puts "
+        "custom titles on screen in any font, size, color and position, with motion (fade, slide in/out from any "
+        "side, pop, zoom, blur, typewriter). Looks and text apply to the long cut and the Shorts."
     ),
 )
 
@@ -91,6 +98,107 @@ def set_caption_style(
     """Caption look for Shorts. preset: bold (uppercase, heavy outline), clean, or karaoke (active word highlighted)."""
     style = CaptionStyle(preset=preset, color=color, highlight=highlight, words_per_line=words_per_line)
     return P.summary(P.set_captions(P.load(project_id), style))
+
+
+@mcp.tool()
+def set_color_grade(
+    project_id: str,
+    preset: Annotated[str | None, Field(description=(
+        "Starting look: " + ", ".join(looks.PRESETS) + ". 'none' removes all looks. "
+        "Numbers you also pass override the preset's."))] = None,
+    brightness: Annotated[float | None, Field(description="-1..1, 0 = unchanged. -0.05 is a gentle darken.")] = None,
+    contrast: Annotated[float | None, Field(description="0..3, 1 = unchanged")] = None,
+    saturation: Annotated[float | None, Field(description="0..3, 0 = black and white, 1 = unchanged")] = None,
+    gamma: Annotated[float | None, Field(description="0.1..4, 1 = unchanged; below 1 darkens shadows and midtones")] = None,
+    warmth: Annotated[float | None, Field(description="-1 (cool/blue) .. 1 (warm/orange), 0 = unchanged")] = None,
+    vignette: Annotated[float | None, Field(description="0..1 darkened corners")] = None,
+    start: Annotated[float | None, Field(description="Source seconds; leave empty for the whole video")] = None,
+    end: Annotated[float | None, Field(description="Source seconds; leave empty for the whole video")] = None,
+) -> dict:
+    """Change lighting and color: darker/brighter, contrast, saturation, warm/cool, film looks, vignette.
+
+    Without start/end the look replaces any earlier one and covers the whole video; with them it is added for
+    that stretch only. Text overlays are not affected. Render afterwards to see it."""
+    g = looks.build(preset, start, end, brightness=brightness, contrast=contrast, saturation=saturation,
+                    gamma=gamma, warmth=warmth, vignette=vignette)
+    return P.summary(P.set_grade(P.load(project_id), g))
+
+
+_ANIM_DOC = "Animation: " + ", ".join(overlays.ANIMS) + ". 'slide' moves and fades; the others stay in place."
+
+
+@mcp.tool()
+def add_text(
+    project_id: str,
+    text: Annotated[str, Field(description="Words to show. Use \\n for a line break.")],
+    start: Annotated[float, Field(description="When it appears, in seconds (see `timeline`)")],
+    end: Annotated[float, Field(description="When it is gone, in seconds (see `timeline`)")],
+    timeline: Annotated[str, Field(description=(
+        "'source' = times in the original upload (default, like cuts and Shorts); 'cut' = times in the "
+        "edited long video the creator is watching"))] = "source",
+    position: Annotated[str, Field(description="One of: " + ", ".join(overlays.POSITIONS))] = "center",
+    x: Annotated[float | None, Field(description="0..1 across the frame; with y, centres the text on that point")] = None,
+    y: Annotated[float | None, Field(description="0..1 down the frame")] = None,
+    font: Annotated[str, Field(description="Font family; call list_fonts for what this server has")] = "Inter",
+    size: Annotated[int, Field(description="Text height in px on a 1080p frame (scaled to each output). "
+                                           "60 small, 96 title, 140 big, 200 huge")] = 96,
+    color: Annotated[str, Field(description="Hex like #87CEEB or a name like 'sky blue'")] = "FFFFFF",
+    bold: bool = True,
+    italic: bool = False,
+    outline: Annotated[float, Field(description="Outline thickness in px, 0 for none")] = 3.0,
+    outline_color: str = "000000",
+    shadow: Annotated[float, Field(description="Drop shadow distance in px, 0 for none")] = 2.0,
+    background: Annotated[str | None, Field(description="Color of a box behind the text, or empty for none")] = None,
+    animate_in: Annotated[str, Field(description=_ANIM_DOC)] = "fade",
+    in_from: Annotated[str, Field(description="For slide: the side it comes in FROM: left, right, up, down")] = "right",
+    animate_out: Annotated[str, Field(description=_ANIM_DOC)] = "fade",
+    out_to: Annotated[str, Field(description="For slide: the side it leaves TOWARD: left, right, up, down")] = "left",
+    in_seconds: Annotated[float, Field(description="Length of the entrance")] = 0.6,
+    out_seconds: Annotated[float, Field(description="Length of the exit")] = 0.6,
+    slide_distance: Annotated[float, Field(description="How far a slide travels, as a fraction of the frame")] = 0.15,
+    applies_to: Annotated[str, Field(description="all, long (long cut only) or shorts (Shorts only)")] = "all",
+) -> dict:
+    """Put custom text on screen (titles, callouts, lower thirds) with motion graphics.
+
+    Example, "fade in from the right and fade out to the left": animate_in="slide", in_from="right",
+    animate_out="slide", out_to="left". Returns the project summary; the new text's id is in `added`.
+    Render afterwards to see it."""
+    p = P.load(project_id)
+    if timeline not in ("source", "cut"):
+        raise ValueError("timeline must be 'source' or 'cut'")
+    if timeline == "cut":
+        start, end = overlays.source_time(start, p.edits.keep), overlays.source_time(end, p.edits.keep)
+    t = TextOverlay(
+        id=P.next_text_id(p), text=text, start=start, end=end, position=position, x=x, y=y, font=font,
+        size=size, color=color, bold=bold, italic=italic, outline=outline, outline_color=outline_color,
+        shadow=shadow, background=background or None,
+        animate_in=TextAnim(style=animate_in, direction=in_from, seconds=in_seconds, distance=slide_distance),
+        animate_out=TextAnim(style=animate_out, direction=out_to, seconds=out_seconds, distance=slide_distance),
+        applies_to=applies_to,
+    )
+    return {"added": t.id, **P.summary(P.add_text(p, t))}
+
+
+@mcp.tool()
+def update_text(project_id: str, text_id: str, changes: dict) -> dict:
+    """Change an existing text overlay. `changes` uses add_text's stored field names: text, start, end
+    (source seconds), position, x, y, font, size, color, bold, italic, outline, outline_color, shadow, background,
+    applies_to, and animate_in / animate_out as {"style", "direction", "seconds", "distance"}."""
+    return P.summary(P.update_text(P.load(project_id), text_id, changes))
+
+
+@mcp.tool()
+def remove_text(project_id: str, text_id: str) -> dict:
+    """Delete a text overlay by id, or every one with text_id="all"."""
+    return P.summary(P.remove_text(P.load(project_id), text_id))
+
+
+@mcp.tool()
+def list_fonts() -> list[str]:
+    """Font families installed on this server, for add_text's `font`."""
+    r = subprocess.run(["fc-list", ":", "family"], capture_output=True, text=True)
+    names = {n.split(",")[0].strip() for n in r.stdout.splitlines() if n.strip()}
+    return sorted(names)
 
 
 @mcp.tool()

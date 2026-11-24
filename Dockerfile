@@ -1,6 +1,9 @@
 # Cutline web app: landing page + editor + API. Runs anywhere that runs a container.
 FROM python:3.12-slim
-RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core \
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core fontconfig \
+    && for f in fonts-inter fonts-liberation2 fonts-roboto-unhinted fonts-open-sans fonts-lato fonts-montserrat \
+         fonts-urw-base35 fonts-noto-color-emoji; do \
+         apt-get install -y --no-install-recommends "$f" || echo "skipping $f"; done \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY pyproject.toml README.md ./

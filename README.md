@@ -26,6 +26,9 @@ the original file, so changes are instant and undoable until you render.
 | `tune_rough_cut` | Re-plan with more or less breathing room, fillers on or off |
 | `suggest_shorts` / `add_shorts` | Heuristic shortlist, or Claude's own picks |
 | `set_caption_style` | `bold`, `clean`, or `karaoke` (active word highlighted) |
+| `set_color_grade` | Lighting and color: presets (`darker`, `warm`, `cinematic`, `night`, `black_and_white`...) or brightness, contrast, saturation, gamma, warmth, vignette; whole video or a time range |
+| `add_text` / `update_text` / `remove_text` | Custom on-screen text in any font, size, color and position, with motion: fade, slide in from / out to any side, pop, zoom, blur, typewriter |
+| `list_fonts` | Fonts installed on the server |
 | `render` | Long cut, Shorts (1080x1920, captions burned in), or a fast 480p preview |
 | `get_project` | Current lengths, cuts, Shorts, output files |
 
