@@ -168,3 +168,38 @@ def test_content_center_page(client):
     assert r.status_code == 200 and "Content Center" in r.text
     assert client.get("/static/content.js").status_code == 200
     assert 'id="pricing"' in client.get("/").text
+
+
+class LooksAndTextClaude(FakeClaude):
+    """The tool calls for "make it darker, add sky blue text that slides in from the right and out to the left"."""
+
+    def create(self, **kw):
+        self.calls.append(kw)
+        if len(self.calls) == 1:
+            return NS(stop_reason="tool_use", content=[
+                _block(type="tool_use", id="a", name="set_color_grade", input={"preset": "darker"}),
+                _block(type="tool_use", id="b", name="add_text", input={
+                    "text": "what a beautiful location", "start": 0.5, "end": 4, "color": "sky blue",
+                    "animate_in": "slide", "in_from": "right", "animate_out": "slide", "out_to": "left"}),
+                _block(type="tool_use", id="c", name="render", input={"what": "long"}),
+            ])
+        return NS(stop_reason="end_turn", content=[_block(type="text", text="Done.")])
+
+
+def test_chat_edits_the_uploaded_video(client, clip, monkeypatch):
+    """Upload through the site, then a chat turn grades and titles that same upload and serves the result."""
+    with clip.open("rb") as f:
+        pid = client.post("/api/projects", files={"video": ("my trip.mp4", f, "video/mp4")}).json()["project_id"]
+    fake = LooksAndTextClaude()
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test")
+    monkeypatch.setattr(agent, "chat", lambda pid_, hist, text, client=None, on_tool=None, _c=agent.chat:
+                        _c(pid_, hist, text, client=fake, on_tool=on_tool))
+    r = client.post(f"/api/projects/{pid}/chat", json={"message": "make it darker and add a sky blue title"})
+    assert r.status_code == 200, r.text
+    s = wait(client, pid)
+    assert s["job"]["state"] == "done", s["job"]
+    assert s["chat"][-1]["text"] == "Done."
+    p = P.load(pid)
+    assert p.source.endswith("my_trip.mp4") and p.edits.grades and p.edits.texts[0].color == "87CEEB"
+    v = client.get(s["outputs"]["long"])
+    assert v.status_code == 200 and len(v.content) > 1000

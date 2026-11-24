@@ -180,6 +180,11 @@ def _step_label(tool: str) -> str:
         "add_shorts": "Picking Shorts",
         "suggest_shorts": "Picking Shorts",
         "render": "Rendering",
+        "set_color_grade": "Adjusting color and lighting",
+        "add_text": "Adding text",
+        "update_text": "Updating text",
+        "remove_text": "Removing text",
+        "list_fonts": "Checking fonts",
         "ai_edit_scene": "Generating the AI scene edit",
         "make_montage": "Building the montage",
     }.get(tool, tool.replace("_", " ").capitalize())

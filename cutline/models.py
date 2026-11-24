@@ -67,11 +67,59 @@ class CaptionStyle(BaseModel):
     words_per_line: int = 3
 
 
+class ColorGrade(BaseModel):
+    """A look applied to the picture (not to text). Neutral values change nothing."""
+
+    preset: str | None = None  # name it was built from, e.g. "darker"; some presets add a curve or split tone
+    brightness: float = 0.0  # -1..1, added to every pixel (eq)
+    contrast: float = 1.0  # 0..3
+    saturation: float = 1.0  # 0 = black and white, 1 = unchanged, 2 = very vivid
+    gamma: float = 1.0  # <1 darkens shadows and midtones, >1 lifts them
+    warmth: float = 0.0  # -1 (cool, blue) .. 1 (warm, orange)
+    vignette: float = 0.0  # 0..1 darkened corners
+    start: float | None = None  # source seconds; None = whole video
+    end: float | None = None
+
+
+class TextAnim(BaseModel):
+    style: str = "fade"  # none | fade | slide | pop | zoom | blur | typewriter
+    direction: str = "right"  # slide: side it comes in FROM (in) or leaves TOWARD (out)
+    seconds: float = 0.6
+    distance: float = 0.15  # slide travel, as a fraction of the frame width/height
+    fade: bool = True  # slide also fades
+
+
+class TextOverlay(BaseModel):
+    """Custom on-screen text (titles, callouts, lower thirds), timed in source seconds."""
+
+    id: str
+    text: str
+    start: float
+    end: float
+    position: str = "center"  # center, top, bottom, left, right, top_left, top_right, bottom_left, bottom_right, lower_third
+    x: float | None = None  # 0..1 across the frame; with y, overrides position (text centred on the point)
+    y: float | None = None  # 0..1 down the frame
+    font: str = "Inter"
+    size: int = 96  # pixels on a 1080p frame; scaled to the output
+    color: str = "FFFFFF"  # RRGGBB
+    bold: bool = True
+    italic: bool = False
+    outline: float = 3.0
+    outline_color: str = "000000"
+    shadow: float = 2.0
+    background: str | None = None  # RRGGBB box behind the text, or None
+    animate_in: TextAnim = Field(default_factory=TextAnim)
+    animate_out: TextAnim = Field(default_factory=lambda: TextAnim(direction="left"))
+    applies_to: str = "all"  # all | long | shorts
+
+
 class EditList(BaseModel):
     keep: list[Range] = Field(default_factory=list)
     removed: list[Range] = Field(default_factory=list)  # user-requested cuts, kept so they survive re-planning
     shorts: list[Short] = Field(default_factory=list)
     captions: CaptionStyle = Field(default_factory=CaptionStyle)
+    grades: list[ColorGrade] = Field(default_factory=list)
+    texts: list[TextOverlay] = Field(default_factory=list)
 
 
 class MediaInfo(BaseModel):
