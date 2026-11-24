@@ -31,6 +31,8 @@ the original file, so changes are instant and undoable until you render.
 
 ## Web app
 
+To put it online, see [DEPLOY.md](DEPLOY.md) (Fly.io, about $5 to $16/month).
+
 `cutline-web` serves the marketing site at `/`, the Studio showcase at `/studio`, and the editor (a chat center) at `/app`:
 
 - Upload a video (drag and drop), then Cutline cuts silences and ums and makes captioned Shorts automatically.

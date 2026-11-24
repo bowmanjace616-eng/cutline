@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import threading
 import re
 import uuid
 from pathlib import Path
@@ -26,7 +27,10 @@ def _dir(pid: str) -> Path:
 def save(p: Project) -> None:
     d = _dir(p.id)
     d.mkdir(parents=True, exist_ok=True)
-    (d / "project.json").write_text(p.model_dump_json(indent=2))
+    # Write then rename, so a reader never sees a half-written file while a render is saving.
+    tmp = d / f"project.json.{os.getpid()}.{threading.get_ident()}.tmp"
+    tmp.write_text(p.model_dump_json(indent=2))
+    os.replace(tmp, d / "project.json")
 
 
 def load(pid: str) -> Project:

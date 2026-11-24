@@ -134,3 +134,37 @@ def test_agent_loop(client, clip):
 def test_agent_reports_tool_errors(client):
     out, err = agent.run_tool("get_project", {}, "abcdef123456")
     assert err and "No project" in out
+
+
+def test_health(client):
+    r = client.get("/healthz")
+    assert r.status_code == 200 and r.json()["ok"] is True
+
+
+def test_access_code_gates_uploads(client, clip, monkeypatch):
+    monkeypatch.setenv("CUTLINE_ACCESS_CODE", "letmein")
+    assert client.get("/api/access").json() == {"required": True, "ok": False}
+    with open(clip, "rb") as f:
+        r = client.post("/api/projects", files={"video": ("a.mp4", f, "video/mp4")})
+    assert r.status_code == 401 and r.json()["need_code"]
+    assert client.post("/api/access", json={"code": "nope"}).status_code == 403
+    assert client.post("/api/access", json={"code": "letmein"}).status_code == 200
+    assert client.get("/api/access").json()["ok"] is True
+    with open(clip, "rb") as f:
+        assert client.post("/api/projects", files={"video": ("a.mp4", f, "video/mp4")}).status_code == 200
+    assert client.post("/api/waitlist", json={"email": "a@b.co"}).status_code == 200  # stays open
+
+
+def test_cleanup_removes_old_projects(client, clip):
+    with open(clip, "rb") as f:
+        pid = client.post("/api/projects", files={"video": ("a.mp4", f, "video/mp4")}).json()["project_id"]
+    assert web.cleanup(now=time.time()) == 0
+    assert web.cleanup(now=time.time() + 30 * 86400) >= 2  # the project and its upload
+    assert client.get(f"/api/projects/{pid}").status_code == 404
+
+
+def test_content_center_page(client):
+    r = client.get("/content")
+    assert r.status_code == 200 and "Content Center" in r.text
+    assert client.get("/static/content.js").status_code == 200
+    assert 'id="pricing"' in client.get("/").text

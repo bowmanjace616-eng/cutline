@@ -23,6 +23,7 @@
   <div class="side-label">Recent</div>
   <nav class="recent" id="recent"><p class="side-empty">Your videos will show up here.</p></nav>
   <div class="side-bottom">
+    <a href="/content"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.8L20 10l-5 3.6L16.8 20 12 16.3 7.2 20 9 13.6 4 10l6.1-1.2z"/></svg>Content Center</a>
     <a href="/studio"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Studio</a>
     <a href="/#claude"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Use in Claude</a>
   </div>
@@ -113,5 +114,15 @@
 
 <script src="/static/common.js"></script>
 <script src="/static/app.js"></script>
+<div class="gate" id="gate" hidden>
+  <form class="gate-card" id="gate-form">
+    <span class="logo-mark"></span>
+    <h2>Cutline is in private beta</h2>
+    <p>Enter the access code from your invite to start editing. No code yet? <a href="/#waitlist">Join the waitlist</a>.</p>
+    <input id="gate-code" type="text" autocomplete="off" placeholder="Access code" aria-label="Access code" required>
+    <button class="btn primary" type="submit">Continue</button>
+    <p class="gate-msg" id="gate-msg"></p>
+  </form>
+</div>
 </body>
 </html>

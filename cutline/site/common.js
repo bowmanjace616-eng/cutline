@@ -34,6 +34,9 @@ const Cutline = (() => {
       xhr.onerror = () => reject(new Error("Upload failed. Check your connection and try again."));
       xhr.onload = async () => {
         let s = {}; try { s = JSON.parse(xhr.responseText); } catch {}
+        if (xhr.status === 401 && s.need_code && !location.pathname.startsWith("/app")) {
+          location.href = "/app" + (prompt ? "?prompt=" + encodeURIComponent(prompt) : ""); return;
+        }
         if (xhr.status >= 300) return reject(new Error(s.error || `Upload failed (${xhr.status})`));
         remember(s);
         const pid = s.project_id;

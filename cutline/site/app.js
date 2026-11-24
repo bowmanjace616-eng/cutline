@@ -149,6 +149,7 @@ $("#input").addEventListener("input", autosize);
 document.querySelectorAll("#chat-hint .chip").forEach(c => c.addEventListener("click", () => send(c.textContent)));
 
 // ---------- start ----------
+function boot() {
 if (pid) {
   api(`/api/projects/${pid}`).then(s => {
     remember(s);
@@ -157,3 +158,17 @@ if (pid) {
     if (s.notice) $("#input").value = params.get("prompt");
   }).catch(() => { history.replaceState({}, "", "/app"); pid = null; showRecent(); });
 } else showRecent();
+}
+
+// Beta gate: when the server has an access code, ask for it once (it's kept in a cookie).
+api("/api/access").then(a => {
+  if (!a.required || a.ok) return boot();
+  const g = $("#gate"); g.hidden = false; $("#gate-code").focus();
+  $("#gate-form").onsubmit = async e => {
+    e.preventDefault();
+    try {
+      await api("/api/access", { method: "POST", body: JSON.stringify({ code: $("#gate-code").value }) });
+      g.hidden = true; boot();
+    } catch (err) { $("#gate-msg").textContent = err.message; }
+  };
+}).catch(boot);

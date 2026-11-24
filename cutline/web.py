@@ -10,6 +10,7 @@ auto edit, Shorts, downloads) works without it.
 from __future__ import annotations
 
 import argparse
+import hmac
 import json
 import os
 import re
@@ -19,6 +20,8 @@ import time
 from pathlib import Path
 
 from starlette.applications import Starlette
+from starlette.middleware import Middleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import FileResponse, JSONResponse, RedirectResponse
 from starlette.routing import Mount, Route
@@ -29,8 +32,30 @@ from . import agent, project as P
 SITE = Path(__file__).parent / "site"
 MAX_UPLOAD_MB = int(os.environ.get("CUTLINE_MAX_UPLOAD_MB", "2048"))
 VIDEO_EXT = {".mp4", ".mov", ".m4v", ".mkv", ".webm"}
+RETENTION_DAYS = float(os.environ.get("CUTLINE_RETENTION_DAYS", "7"))
+# Renders are CPU and memory heavy; a small server should run one or two at a time and queue the rest.
+_slots = threading.BoundedSemaphore(max(1, int(os.environ.get("CUTLINE_MAX_JOBS", "1"))))
 _jobs: dict[str, dict] = {}  # project id -> {"state", "step", "error"}
 _lock = threading.Lock()
+
+
+# ---- beta access code: when CUTLINE_ACCESS_CODE is set, uploads and edits need it ----
+
+def _access_code() -> str:
+    return os.environ.get("CUTLINE_ACCESS_CODE", "").strip()
+
+
+def _has_access(request: Request) -> bool:
+    code = _access_code()
+    return not code or hmac.compare_digest(request.cookies.get("cutline_code", ""), code)
+
+
+class AccessGate(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        path = request.url.path
+        if (path.startswith("/api/projects") or path.startswith("/files/")) and not _has_access(request):
+            return JSONResponse({"error": "Enter your beta access code first", "need_code": True}, status_code=401)
+        return await call_next(request)
 
 
 def _uploads() -> Path:
@@ -98,7 +123,13 @@ def _save_chat(pid: str, visible: list[dict], api: list[dict]) -> None:
 def _run(pid: str, fn) -> None:
     def work():
         try:
-            fn()
+            if not _slots.acquire(blocking=False):
+                _set_job(pid, step="Waiting for a free editor")
+                _slots.acquire()
+            try:
+                fn()
+            finally:
+                _slots.release()
             _set_job(pid, state="done", step="")
         except Exception as e:  # surface the reason in the UI
             _set_job(pid, state="error", step="", error=str(e))
@@ -112,7 +143,9 @@ def _auto(pid: str, shorts: int, captions: str, transcribe: bool) -> None:
     _set_job(pid, step="Finding silences" + (" and transcribing" if transcribe else ""))
     try:
         p = P.analyze(p, do_transcribe=transcribe)
-    except ImportError:
+    except (ImportError, RuntimeError) as e:
+        if "faster-whisper" not in str(e) and isinstance(e, RuntimeError):
+            raise
         # Whisper not installed on this server: still cut silences.
         p = P.analyze(p, do_transcribe=False)
     _set_job(pid, step="Rendering the long cut")
@@ -241,12 +274,58 @@ async def files(request: Request):
     return FileResponse(f, media_type="video/mp4", filename=name if download else None)
 
 
+async def access(request: Request) -> JSONResponse:
+    if request.method == "POST":
+        code = str((await request.json()).get("code", "")).strip()
+        if not _access_code() or not hmac.compare_digest(code, _access_code()):
+            return _err("That code didn't work", 403)
+        r = JSONResponse({"required": True, "ok": True})
+        r.set_cookie("cutline_code", code, max_age=60 * 60 * 24 * 90, httponly=True, samesite="lax",
+                     secure=request.url.scheme == "https")
+        return r
+    return JSONResponse({"required": bool(_access_code()), "ok": _has_access(request)})
+
+
+async def health(request: Request) -> JSONResponse:
+    return JSONResponse({"ok": True, "chat_enabled": agent.has_key()})
+
+
+# ---- cleanup: uploads and renders older than CUTLINE_RETENTION_DAYS are deleted ----
+
+def cleanup(now: float | None = None) -> int:
+    cutoff = (now or time.time()) - RETENTION_DAYS * 86400
+    removed = 0
+    for d in P.home().iterdir():
+        last = max((f.stat().st_mtime for f in d.iterdir()), default=d.stat().st_mtime) if d.is_dir() else 0
+        if d.is_dir() and last < cutoff and not _busy(d.name):
+            shutil.rmtree(d, ignore_errors=True)
+            removed += 1
+    for f in _uploads().iterdir():
+        if f.is_file() and f.stat().st_mtime < cutoff:
+            f.unlink(missing_ok=True)
+            removed += 1
+    return removed
+
+
+def _cleanup_loop() -> None:
+    while True:
+        try:
+            cleanup()
+        except Exception:
+            pass
+        time.sleep(3600)
+
+
 async def app_page(request: Request):
     return FileResponse(SITE / "app.html")
 
 
 async def studio_page(request: Request):
     return FileResponse(SITE / "studio.html")
+
+
+async def content_page(request: Request):
+    return FileResponse(SITE / "content.html")
 
 
 async def home_page(request: Request):
@@ -256,6 +335,7 @@ async def home_page(request: Request):
 routes = [
     Route("/", home_page),
     Route("/studio", studio_page),
+    Route("/content", content_page),
     Route("/app", app_page),
     Route("/app/", lambda r: RedirectResponse("/app")),
     Route("/api/projects", upload, methods=["POST"]),
@@ -263,11 +343,13 @@ routes = [
     Route("/api/projects/{pid}/auto", auto, methods=["POST"]),
     Route("/api/projects/{pid}/chat", chat, methods=["POST"]),
     Route("/api/waitlist", waitlist, methods=["POST"]),
+    Route("/api/access", access, methods=["GET", "POST"]),
+    Route("/healthz", health),
     Route("/files/{pid}/{name}", files),
     Mount("/static", StaticFiles(directory=SITE), name="static"),
 ]
 
-app = Starlette(routes=routes)
+app = Starlette(routes=routes, middleware=[Middleware(AccessGate)])
 
 
 def main() -> None:
@@ -277,6 +359,8 @@ def main() -> None:
     ap.add_argument("--host", default=os.environ.get("HOST", "127.0.0.1"))
     ap.add_argument("--port", type=int, default=int(os.environ.get("PORT", "8080")))
     a = ap.parse_args()
+    if RETENTION_DAYS > 0:
+        threading.Thread(target=_cleanup_loop, daemon=True).start()
     uvicorn.run(app, host=a.host, port=a.port)
 
 

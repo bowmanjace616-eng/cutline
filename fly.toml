@@ -1,0 +1,38 @@
+# Fly.io config for Cutline. Deploy with: fly launch --copy-config --no-deploy, then fly deploy.
+# Change "app" to a name you own; it becomes <app>.fly.dev.
+app = "cutline"
+primary_region = "iad"
+
+[build]
+
+[env]
+  CUTLINE_HOME = "/data"
+  CUTLINE_MAX_UPLOAD_MB = "2048"
+  CUTLINE_RETENTION_DAYS = "7"
+  CUTLINE_MAX_JOBS = "1"
+
+[mounts]
+  source = "cutline_data"
+  destination = "/data"
+  initial_size = "10gb"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  # Sleep when nobody is using it and wake on the next visit (about a second), so you only
+  # pay for compute while someone is on the site. The editor polls while a render runs,
+  # which keeps the machine awake until it finishes.
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    grace_period = "20s"
+    interval = "30s"
+    timeout = "5s"
+    method = "GET"
+    path = "/healthz"
+
+[[vm]]
+  size = "shared-cpu-2x"
+  memory = "2gb"
