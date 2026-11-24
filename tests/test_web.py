@@ -45,8 +45,20 @@ def test_pages(client):
     assert "Cutline" in client.get("/").text
     assert 'id="start-view"' in client.get("/app").text
     assert "Studio" in client.get("/studio").text
-    for f in ("app.js", "common.js", "style.css", "media/motion.mp4"):
+    for f in ("app.js", "common.js", "style.css", "content.css", "motion.css"):
         assert client.get(f"/static/{f}").status_code == 200, f
+
+
+def test_no_sample_footage(client):
+    """The site ships no demo clips and the editor never points Claude at one: only the creator's upload."""
+    from cutline import agent
+
+    assert client.get("/static/media/raw.mp4").status_code == 404
+    for page in ("/", "/studio", "/app", "/content", "/static/content.js", "/static/motion.css"):
+        text = client.get(page).text.lower()
+        assert "/static/media/" not in text, page
+        assert "car in" not in text and "talking-head-10s" not in text, page
+    assert "no sample" in agent.SYSTEM.lower()
 
 
 def test_upload_auto_and_download(client, clip):

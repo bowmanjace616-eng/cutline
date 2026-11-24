@@ -26,4 +26,4 @@ build-backend = "setuptools.build_meta"
 packages = ["cutline"]
 
 [tool.setuptools.package-data]
-cutline = ["site/*", "site/media/*"]
+cutline = ["site/*"]
