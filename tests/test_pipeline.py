@@ -61,7 +61,10 @@ def test_rough_cut_and_shorts(video):
     assert P.summary(p)["cut_seconds"] < s["cut_seconds"] - 3
 
     long_out = P.render_long(p)
-    assert media.probe(long_out).duration == pytest.approx(P.summary(p)["cut_seconds"], abs=0.3)
+    streams = subprocess.run(["ffprobe", "-v", "error", "-count_frames", "-show_entries",
+                              "stream=codec_type,duration,nb_read_frames,start_time", "-of", "compact", long_out],
+                             capture_output=True, text=True).stdout
+    assert media.probe(long_out).duration == pytest.approx(P.summary(p)["cut_seconds"], abs=0.3), streams
 
     p.edits.captions.preset = "karaoke"
     P.set_shorts(p, [Short(title="Why videos work", start=0, end=9)])
