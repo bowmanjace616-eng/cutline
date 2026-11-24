@@ -9,7 +9,6 @@ this server does the video work. Run locally with stdio, or as a remote connecto
 
 from __future__ import annotations
 
-import subprocess
 import sys
 from typing import Annotated
 
@@ -23,13 +22,15 @@ from .models import CaptionStyle, Range, Short, TextAnim, TextOverlay
 mcp = MCPServer(
     name="cutline",
     instructions=(
-        "Cutline edits talking-head videos. Typical flow: create_project -> analyze -> review get_transcript "
+        "Cutline edits any video: talking heads, b-roll, scenery, gameplay. For speech-driven edits the flow is: create_project -> analyze -> review get_transcript "
         "-> remove_ranges for anything the creator wants gone -> pick 3-5 strong, self-contained moments "
         "of 15-60s (start on a hook, end on a payoff) and call add_shorts -> render. All times are seconds "
         "in the ORIGINAL source video. Edits are non-destructive; nothing is re-encoded until render. "
         "Beyond cuts: set_color_grade changes lighting and color (darker, warmer, cinematic...), add_text puts "
         "custom titles on screen in any font, size, color and position, with motion (fade, slide in/out from any "
-        "side, pop, zoom, blur, typewriter). Looks and text apply to the long cut and the Shorts."
+        "side, pop, zoom, blur, typewriter). Looks and text apply to the long cut and the Shorts. Text and looks "
+        "need no transcript, so they work on clips with no speech. When the creator gives the exact words to show "
+        "(even if they call them captions), use add_text; captions are only the automatic spoken-word subtitles."
     ),
 )
 
@@ -139,7 +140,9 @@ def add_text(
     position: Annotated[str, Field(description="One of: " + ", ".join(overlays.POSITIONS))] = "center",
     x: Annotated[float | None, Field(description="0..1 across the frame; with y, centres the text on that point")] = None,
     y: Annotated[float | None, Field(description="0..1 down the frame")] = None,
-    font: Annotated[str, Field(description="Font family; call list_fonts for what this server has")] = "Inter",
+    font: Annotated[str, Field(description=(
+        "Font family, e.g. Arial, Montserrat, Roboto. Common fonts that aren't installed (Arial, Helvetica, "
+        "Times New Roman...) map to an identical-looking free font; list_fonts shows everything"))] = "Inter",
     size: Annotated[int, Field(description="Text height in px on a 1080p frame (scaled to each output). "
                                            "60 small, 96 title, 140 big, 200 huge")] = 96,
     color: Annotated[str, Field(description="Hex like #87CEEB or a name like 'sky blue'")] = "FFFFFF",
@@ -164,6 +167,7 @@ def add_text(
     animate_out="slide", out_to="left". Returns the project summary; the new text's id is in `added`.
     Render afterwards to see it."""
     p = P.load(project_id)
+    font, font_note = overlays.resolve_font(font)
     if timeline not in ("source", "cut"):
         raise ValueError("timeline must be 'source' or 'cut'")
     if timeline == "cut":
@@ -176,7 +180,10 @@ def add_text(
         animate_out=TextAnim(style=animate_out, direction=out_to, seconds=out_seconds, distance=slide_distance),
         applies_to=applies_to,
     )
-    return {"added": t.id, **P.summary(P.add_text(p, t))}
+    out = {"added": t.id, **P.summary(P.add_text(p, t))}
+    if font_note:
+        out["font_note"] = font_note + ". Tell the creator."
+    return out
 
 
 @mcp.tool()
@@ -196,9 +203,7 @@ def remove_text(project_id: str, text_id: str) -> dict:
 @mcp.tool()
 def list_fonts() -> list[str]:
     """Font families installed on this server, for add_text's `font`."""
-    r = subprocess.run(["fc-list", ":", "family"], capture_output=True, text=True)
-    names = {n.split(",")[0].strip() for n in r.stdout.splitlines() if n.strip()}
-    return sorted(names)
+    return overlays.installed_fonts()
 
 
 @mcp.tool()

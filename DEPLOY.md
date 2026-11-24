@@ -34,9 +34,18 @@ Chat editing calls the Claude API and is billed by Anthropic per use, separately
 
 ## Automatic deploys
 
-`.github/workflows/deploy.yml` redeploys on every push to `main` once you add a repository secret
-named `FLY_API_TOKEN` (create it with `fly tokens create deploy`, then add it in GitHub under
-Settings > Secrets and variables > Actions).
+`.github/workflows/deploy.yml` runs the tests and then deploys `main` to Fly on every push to `main`
+(and on demand from the Actions tab). It needs one repository secret, set up once:
+
+1. In the Fly dashboard (fly.io/dashboard), open the app **cutline-b1svdw** > **Tokens** > **Create token**
+   (a deploy token for this app only). Or run `fly tokens create deploy -a cutline-b1svdw`. Copy the token.
+2. On GitHub, open the repo > **Settings** > **Secrets and variables** > **Actions** > **New repository secret**.
+   Name: `FLY_API_TOKEN`. Value: the token. Save.
+3. Open the **Actions** tab > **Deploy to Fly** > **Run workflow** (branch `main`) to ship the current `main`.
+
+If Fly's own GitHub integration was used to launch the app, it may be watching a different branch
+(the first launch deployed the `flyio-new-files` branch). GitHub Actions is the one source of deploys
+now, so `main` is always what's live. `https://cutline-app.com/healthz` shows the commit that is live under `version`.
 
 ## Custom domain
 

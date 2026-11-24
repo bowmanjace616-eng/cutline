@@ -292,7 +292,8 @@ async def access(request: Request) -> JSONResponse:
 
 
 async def health(request: Request) -> JSONResponse:
-    return JSONResponse({"ok": True, "chat_enabled": agent.has_key()})
+    return JSONResponse({"ok": True, "chat_enabled": agent.has_key(),
+                         "version": os.environ.get("CUTLINE_VERSION", "unknown"), "text_tools": True})
 
 
 # ---- cleanup: uploads and renders older than CUTLINE_RETENTION_DAYS are deleted ----

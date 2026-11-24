@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import math
 import re
+import subprocess
 
 from .models import Range, TextAnim, TextOverlay
 from .rough_cut import clip_to, map_time
@@ -26,7 +27,7 @@ POSITIONS = {
 
 NAMED_COLORS = {
     "white": "FFFFFF", "black": "000000", "red": "FF3B30", "orange": "FF9500", "yellow": "FFD400",
-    "gold": "FFD700", "green": "34C759", "lime": "32CD32", "teal": "008080", "cyan": "00FFFF",
+    "gold": "FFD700", "golden yellow": "FFC000", "golden": "FFC000", "green": "34C759", "lime": "32CD32", "teal": "008080", "cyan": "00FFFF",
     "sky blue": "87CEEB", "light blue": "ADD8E6", "baby blue": "89CFF0", "blue": "1E6FFF",
     "navy": "000080", "royal blue": "4169E1", "cutline blue": "2E5A8C", "purple": "AF52DE",
     "violet": "8F00FF", "pink": "FF2D92", "hot pink": "FF69B4", "magenta": "FF00FF",
@@ -52,6 +53,34 @@ def parse_color(value: str) -> str:
     raise ValueError(f"Unknown color '{value}'. Use a hex code like #87CEEB or a name like 'sky blue'")
 
 
+# Common fonts that can't ship on a Linux server, and the free look-alike with the same letter widths.
+LOOKALIKES = {
+    "arial": "Liberation Sans", "helvetica": "Liberation Sans", "helvetica neue": "Liberation Sans",
+    "times": "Liberation Serif", "times new roman": "Liberation Serif",
+    "courier": "Liberation Mono", "courier new": "Liberation Mono",
+    "calibri": "Carlito", "cambria": "Caladea",
+}
+
+
+def installed_fonts() -> list[str]:
+    r = subprocess.run(["fc-list", ":", "family"], capture_output=True, text=True, check=False)
+    return sorted({n.split(",")[0].strip() for n in r.stdout.splitlines() if n.strip()})
+
+
+def resolve_font(name: str) -> tuple[str, str | None]:
+    """Map a requested font to one this server has. Returns (family to use, note for the creator or None)."""
+    want = (name or "").strip() or "Inter"
+    have = {f.lower(): f for f in installed_fonts()}
+    if want.lower() in have:
+        return have[want.lower()], None
+    alike = LOOKALIKES.get(want.lower())
+    if alike and alike.lower() in have:
+        return have[alike.lower()], f"{want} itself can't be installed here, so this uses {alike}, which looks the same"
+    r = subprocess.run(["fc-match", "-f", "%{family[0]}", want], capture_output=True, text=True, check=False)
+    got = r.stdout.strip() or "Inter"
+    return got, f"{want} isn't installed, so this uses {got}. Call list_fonts to pick another"
+
+
 def check(t: TextOverlay) -> TextOverlay:
     if not t.text.strip():
         raise ValueError("Text can't be empty")
@@ -59,6 +88,7 @@ def check(t: TextOverlay) -> TextOverlay:
         raise ValueError(f"Text '{t.text}' must end after it starts ({t.start}-{t.end})")
     if t.position not in POSITIONS:
         raise ValueError(f"Unknown position '{t.position}'. Use one of: {', '.join(POSITIONS)}")
+    t.font = resolve_font(t.font)[0]
     for c in ("color", "outline_color", "background"):
         if getattr(t, c) is not None:
             setattr(t, c, parse_color(getattr(t, c)))
