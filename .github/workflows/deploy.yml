@@ -1,10 +1,11 @@
-# Ships main to cutline-app.com (Fly app cutline-b1svdw) on every push to main.
+# Tests every PR, and ships main to cutline-app.com (Fly app cutline-b1svdw) on every push to main.
 # Needs one repository secret, FLY_API_TOKEN (see DEPLOY.md, "Automatic deploys").
 name: Deploy to Fly
 
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch: {}
 
 concurrency:
@@ -25,17 +26,16 @@ jobs:
 
   deploy:
     needs: test
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - name: Check the token is set
+      - name: Deploy (skipped when FLY_API_TOKEN isn't set; Fly's own GitHub integration may deploy main instead)
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: |
           if [ -z "$FLY_API_TOKEN" ]; then
-            echo "::error::Add a FLY_API_TOKEN repository secret first (see DEPLOY.md)"; exit 1
+            echo "::notice::No FLY_API_TOKEN secret, so this workflow didn't deploy (see DEPLOY.md)"; exit 0
           fi
-      - run: flyctl deploy --remote-only --env CUTLINE_VERSION=${{ github.sha }}
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          flyctl deploy --remote-only --env CUTLINE_VERSION=${{ github.sha }}

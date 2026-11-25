@@ -43,9 +43,11 @@ Chat editing calls the Claude API and is billed by Anthropic per use, separately
    Name: `FLY_API_TOKEN`. Value: the token. Save.
 3. Open the **Actions** tab > **Deploy to Fly** > **Run workflow** (branch `main`) to ship the current `main`.
 
-If Fly's own GitHub integration was used to launch the app, it may be watching a different branch
-(the first launch deployed the `flyio-new-files` branch). GitHub Actions is the one source of deploys
-now, so `main` is always what's live. `https://cutline-app.com/healthz` shows the commit that is live under `version`.
+Fly's own GitHub integration is also connected to this repo and deploys `main` by itself (it shows as a
+"Fly.io" check on each commit). That alone keeps the site current. The workflow adds a test gate and
+records the commit: with `FLY_API_TOKEN` set, `https://cutline-app.com/healthz` shows the live commit under
+`version`. To have only tested commits go live, add the token and turn off auto-deploy in the Fly
+dashboard's GitHub settings for the app. Without the token the workflow only runs the tests.
 
 ## Custom domain
 
